@@ -11,8 +11,6 @@
    registrations in the browser. Nothing breaks, nothing is lost —
    you just will not have a shared database yet.
    ============================================================ */
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 export const firebaseConfig = {
   apiKey: "AIzaSyBdd2cdc29zb_5QtppOd_dW2fA946Rx6cw",
   authDomain: "nst-nextgen-storytellers.firebaseapp.com",
@@ -45,5 +43,3 @@ export function isConfigured(){
     v => typeof v === "string" && v.length > 0 && !v.startsWith("PASTE_")
   );
 }
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
