@@ -123,10 +123,10 @@ export const WORKSHOPS = [
     endAt:   "2026-11-21T17:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "Full day · 10.00 – 17.30",
-    venue: "Colombo — venue to be announced",
+    venue: "University of Sri Jayewardenepura",
     joinUrl: "",
     facilitators: ["Madhuka", "Dulain", "Thushanth", "Achintha"],
-    tools: ["Camera (DSLR / mirrorless / phone)", "Laptop"],
+    tools: ["Phone", "Laptop"],
     resources: [],
     desc: "A full hands-on day: Digital Experience Platform fundamentals before lunch, " +
           "then a practical videography block — shoot, direct and review on the spot.",
@@ -145,10 +145,10 @@ export const WORKSHOPS = [
     endAt:   "2026-11-28T17:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "Full day · 10.00 – 17.30",
-    venue: "Kandy — venue to be announced",
+    venue: "University of Peradeniya",
     joinUrl: "",
     facilitators: ["Madhuka", "Dulain", "Thushanth", "Achintha"],
-    tools: ["Camera (DSLR / mirrorless / phone)", "Laptop"],
+    tools: ["Phone", "Laptop"],
     resources: [],
     desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster — " +
           "DXP theory in the morning, videography practical through the afternoon.",
@@ -177,14 +177,6 @@ export const MODULES = [
     covers: "Basic videography theories",
     where: "Physical workshops only"
   }
-];
-
-/* ---- Physical day agenda (Sheet 3) ------------------------ */
-export const AGENDA = [
-  { time: "10.00 – 11.30", what: "Welcome, Rollcall, Ice Breaker", kind: "open"  },
-  { time: "11.30 – 13.30", what: "DXP",                            kind: "session" },
-  { time: "13.30 – 14.30", what: "Lunch",                          kind: "break" },
-  { time: "14.30 – 17.30", what: "Videography",                    kind: "session" }
 ];
 
 /* ---- People ----------------------------------------------- */
@@ -248,8 +240,8 @@ export const FAQ = [
   },
   {
     q: "How do I register?",
-    a: "Open the Register page, tick your sessions, then add your name, email, phone " +
-       "number and entity. If you tick a physical day it also asks what you want to " +
+    a: "Open the Register page, tick your sessions, then add your name, @aiesec.net " +
+       "email, phone number and entity. If you tick a physical day it also asks what you want to " +
        "focus on and any dietary needs. When you confirm, you get a pass with your " +
        "reference code that you can save or print."
   },
@@ -257,9 +249,9 @@ export const FAQ = [
     q: "What is the difference between the online and the physical sessions?",
     a: "The two online masterclasses run live on Google Meet in the week of 9 to 13 November — " +
        "Graphics Design and Video Editing, two to two and a half hours each. The " +
-       "physical workshops are a full day, 10.00 to 17.30, in Colombo and in Kandy: a " +
-       "welcome and ice-breaker, DXP before lunch, then a hands-on videography block " +
-       "through the afternoon."
+       "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
+       "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
+       "DXP and hands-on videography."
   },
   {
     q: "Which physical workshop should I come to?",
@@ -272,8 +264,8 @@ export const FAQ = [
     q: "What do I need to bring?",
     a: "For the online masterclasses, a laptop with the software installed — Photoshop " +
        "for the design session (Illustrator is optional), and Premiere Pro plus After " +
-       "Effects for the editing session. For the physical days, a laptop and a camera; " +
-       "a DSLR, a mirrorless or a phone camera all work."
+       "Effects for the editing session. For the physical days, bring a laptop and your " +
+       "phone. You do not need a camera."
   },
   {
     q: "How do I join an online session?",
@@ -285,7 +277,7 @@ export const FAQ = [
   {
     q: "Why do some dates say “to be confirmed”?",
     a: "The two physical days are Saturdays: 21 November in Colombo and 28 November in " +
-       "Kandy, both with venues still to be announced. The online masterclasses fall in " +
+       "Kandy. The online masterclasses fall in " +
        "the week of 9 to 13 November and their exact days are provisional. When " +
        "something is locked in it updates everywhere on this site — the session cards, " +
        "the countdown and the registration form all read from the same schedule."

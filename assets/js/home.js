@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { OUTCOMES, CLUSTERS, FAQ } from "./data.js";
-import { mountChrome, mountCountdown, liveWatch, initReveal, sound } from "./ui.js";
+import { mountChrome, mountCountdown, liveWatch, initReveal, sound, isAiesecEmail } from "./ui.js";
 import { renderWorkshops, renderPhases, renderOutcomes, renderFaq, renderMarquee } from "./cards.js";
 import { subscribeEmail } from "./store.js";
 
@@ -144,6 +144,11 @@ form?.addEventListener("submit", async e => {
   const btn = form.querySelector("button");
   const email = input.value.trim();
   if (!email) return;
+  if (!isAiesecEmail(email)){
+    msg.className = "form__msg form__msg--err is-on";
+    msg.textContent = "Use your AIESEC email, like name@aiesec.net.";
+    return;
+  }
 
   btn.disabled = true;
   const prev = btn.textContent;

@@ -47,6 +47,11 @@ export function icon(name, cls = ""){
 }
 
 /* ---------- escaping ---------- */
+/* Every form on the site takes AIESEC addresses only. firestore.rules checks this too. */
+export function isAiesecEmail(s){
+  return /^[^\s@]+@aiesec\.net$/i.test(String(s).trim());
+}
+
 export function esc(s){
   return String(s ?? "").replace(/[&<>"']/g, c => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
@@ -482,7 +487,6 @@ function mountFooter(){
             <a href="register.html">Register — Colombo</a>
             <a href="register.html">Register — Kandy</a>
             <a href="workshops.html#online">Online sessions</a>
-            <a href="workshops.html#agenda">Day agenda</a>
           </div>
           <div class="footer__col">
             <h5>Connect</h5>

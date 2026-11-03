@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { SERIES, LEAD, MANAGERS } from "./data.js";
-import { mountChrome, initReveal, esc, icon, initials } from "./ui.js";
+import { mountChrome, initReveal, esc, icon, initials, isAiesecEmail } from "./ui.js";
 import { sendMessage, getMode } from "./store.js";
 
 mountChrome({ active: "contact.html" });
@@ -77,7 +77,7 @@ form?.addEventListener("submit", async e => {
   const body  = document.getElementById("cBody");
 
   let ok = mark(name, !name.value.trim());
-  ok = mark(email, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) && ok;
+  ok = mark(email, !isAiesecEmail(email.value)) && ok;
   ok = mark(body, body.value.trim().length < 5) && ok;
   if (!ok) return;
 

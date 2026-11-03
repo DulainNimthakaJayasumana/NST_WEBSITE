@@ -3,7 +3,7 @@
    ============================================================ */
 
 import { SERIES, ENTITY_GROUPS } from "./data.js";
-import { mountChrome, liveWatch, esc, fmt, icon, statusOf } from "./ui.js";
+import { mountChrome, liveWatch, esc, fmt, icon, statusOf, isAiesecEmail } from "./ui.js";
 import { register, getMode } from "./store.js";
 
 mountChrome({ active: "register.html" });
@@ -122,7 +122,7 @@ function validate(){
   }
 
   ok = setErr(name,  !name.value.trim()) && ok;
-  ok = setErr(email, !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())) && ok;
+  ok = setErr(email, !isAiesecEmail(email.value)) && ok;
   ok = setErr(phone, phone.value.replace(/\D/g, "").length < 9) && ok;
   ok = setErr(entitySel, !entitySel.value) && ok;
 

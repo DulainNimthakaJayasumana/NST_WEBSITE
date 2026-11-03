@@ -112,17 +112,6 @@ export function renderPhases(el, workshops, now = new Date()){
   }).join("");
 }
 
-/* ---------- agenda ---------- */
-export function renderAgenda(el, rows){
-  if (!el) return;
-  el.innerHTML = rows.map(r => `
-    <div class="agenda__row ${r.kind === "break" ? "agenda__row--break" : ""} reveal">
-      <span class="agenda__time">${esc(r.time)}</span>
-      <span class="agenda__what">${esc(r.what)}</span>
-    </div>`).join("");
-  initReveal(el);
-}
-
 /* ---------- outcomes ---------- */
 export function renderOutcomes(el, items){
   if (!el) return;

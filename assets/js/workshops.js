@@ -2,9 +2,9 @@
    workshops.js — workshops.html
    ============================================================ */
 
-import { MODULES, AGENDA, CLUSTERS } from "./data.js";
+import { MODULES, CLUSTERS } from "./data.js";
 import { mountChrome, liveWatch, initReveal, esc, statusOf } from "./ui.js";
-import { renderWorkshops, renderAgenda } from "./cards.js";
+import { renderWorkshops } from "./cards.js";
 
 mountChrome({ active: "workshops.html" });
 
@@ -52,9 +52,6 @@ if (modEl){
     </div>`).join("");
   initReveal(modEl);
 }
-
-/* ---------- agenda ---------- */
-renderAgenda(document.getElementById("agenda-list"), AGENDA);
 
 /* ---------- clusters ---------- */
 const clusters = document.getElementById("clusters");
