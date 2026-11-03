@@ -415,14 +415,11 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .org{ display:grid; }
 .org__label{ position:relative; padding:clamp(70px,8vw,110px) 0 18px; text-align:center; color:var(--lilac); font-weight:500; }
 .org__label::before{ content:""; position:absolute; left:50%; top:14px; bottom:54px; width:1px; background:var(--hair); }
-.org__lead{ display:grid; justify-items:center; text-align:center; gap:10px; }
-.org__lead .badge{ font-size:1.05rem; }
-.org__lead h3{ font-family:var(--f-display); font-weight:400; text-transform:uppercase; color:var(--star); font-size:clamp(3.6rem,12vw,12rem); line-height:.96; }
-.org__lead p{ color:var(--muted); max-width:60ch; }
-.org__row{ display:grid; grid-template-columns:repeat(4,1fr); gap:clamp(12px,2vw,28px); }
+.org__row{ --g:clamp(12px,2vw,28px); display:grid; grid-template-columns:repeat(4,1fr); gap:var(--g); }
+/* The MCVP gets one frame, exactly the width of a manager's, centred above them. */
+.org__row--one{ grid-template-columns:calc((100% - 3 * var(--g)) / 4); justify-content:center; }
 .person__img{ overflow:hidden; aspect-ratio:199/238; background:var(--panel); }
 .person__img img{ width:100%; height:100%; object-fit:cover; object-position:center bottom; filter:grayscale(1) contrast(1.05); transition:filter .6s var(--ease), transform 1s var(--ease-out); }
-.person--framed .person__img img{ transform:scale(1.13); }   /* crops the poster's white frame */
 .person:hover .person__img img{ filter:none; }
 .person__img:has(.person__mono){ background:none; }
 .person__mono{ display:grid; place-items:center; height:100%; font-family:var(--f-display); font-size:clamp(4rem,9vw,9rem); color:var(--violet-2); background:radial-gradient(circle at 50% 30%,rgba(124,58,237,.3),transparent 70%); }
@@ -545,6 +542,7 @@ table.data tbody tr:hover td{ color:var(--star); background:rgba(124,58,237,.12)
   .facts3,.modules,.clusters{ grid-template-columns:1fr; }
   .facts3 > div + div{ padding-left:0; border-left:0; border-top:1px solid var(--hair); }
   .org__row{ grid-template-columns:1fr 1fr; }
+  .org__row--one{ grid-template-columns:calc((100% - var(--g)) / 2); }
 }
 @media (max-width:620px){
   body{ font-size:16px; }

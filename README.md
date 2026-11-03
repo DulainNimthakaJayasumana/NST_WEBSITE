@@ -46,7 +46,7 @@ site only needs a server, not specifically this one.
 | `index.html` | Hero with the animated logo, live countdown, series roadmap, sessions, season-1 recap video |
 | `workshops.html` | Every session in full, the two modules, the physical-day agenda, the entity clusters |
 | `register.html` | One form for all four sessions, ends in a printable confirmation pass |
-| `contact.html` | MCVP, the four managers, the Leadership Body, a message form and the links block |
+| `contact.html` | MCVP, the four managers, a message form and the links block |
 | `admin.html` | **The control room** — the live switch, meeting links, dates, registrations, CSV export |
 
 All pages share `assets/css/styles.css`. The loading screen is `assets/js/loader.js`; its timings are at the top of that file.
@@ -179,7 +179,7 @@ Everything that is not code is in **`assets/js/data.js`**:
 - `CLUSTERS` — the entities for each physical day, shown as "AIESEC in …"
 - `WORKSHOPS` — the four sessions
 - `MODULES` / `AGENDA` — the DXP + Videography blocks and the day's running order
-- `LEAD` / `MANAGERS` — Matheen Amman and the four managers
+- `LEAD` / `MANAGERS` — Matheen and the four managers
 
 ### Please fill these in
 

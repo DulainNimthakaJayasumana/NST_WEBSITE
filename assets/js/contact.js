@@ -2,41 +2,32 @@
    contact.js — contact.html
    ============================================================ */
 
-import { SERIES, LEAD, MANAGERS, LEADERSHIP } from "./data.js";
+import { SERIES, LEAD, MANAGERS } from "./data.js";
 import { mountChrome, initReveal, esc, icon, initials } from "./ui.js";
 import { sendMessage, getMode } from "./store.js";
 
 mountChrome({ active: "contact.html" });
 
-/* ---------- tier 1: MCVP ---------- */
-const lead = document.getElementById("orgLead");
-if (lead){
-  lead.innerHTML = `
-    <span class="badge">${esc(LEAD.role)}</span>
-    <h3>${esc(LEAD.name)}</h3>
-    <p>${esc(LEAD.blurb)}</p>`;
-}
-
-const person = (name, role, photo, framed) => `
-  <figure class="person ${framed ? "person--framed" : ""} reveal">
+const person = (name, role, photo) => `
+  <figure class="person reveal">
     <div class="person__img">${photo
       ? `<img src="${esc(photo)}" alt="${esc(name)}, ${esc(role)}" loading="lazy">`
       : `<div class="person__mono" aria-hidden="true">${esc(initials(name))}</div>`}</div>
     <figcaption><b>${esc(name)}</b><span>${esc(role)}</span></figcaption>
   </figure>`;
 
+/* ---------- tier 1: MCVP ---------- */
+const lead = document.getElementById("orgLead");
+if (lead){
+  lead.innerHTML = person(LEAD.name, LEAD.role, LEAD.photo);
+  initReveal(lead);
+}
+
 /* ---------- tier 2: managers ---------- */
 const mgr = document.getElementById("orgManagers");
 if (mgr){
-  mgr.innerHTML = MANAGERS.map(m => person(m.name, m.role, m.photo, true)).join("");
+  mgr.innerHTML = MANAGERS.map(m => person(m.name, m.role, m.photo)).join("");
   initReveal(mgr);
-}
-
-/* ---------- tier 3: Leadership Body (initials until photos land) ---------- */
-const lb = document.getElementById("orgLB");
-if (lb){
-  lb.innerHTML = LEADERSHIP.map(p => person(p.name, p.role, p.photo)).join("");
-  initReveal(lb);
 }
 
 /* ---------- links ---------- */

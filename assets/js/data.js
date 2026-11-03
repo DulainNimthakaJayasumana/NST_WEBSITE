@@ -188,30 +188,13 @@ export const AGENDA = [
 ];
 
 /* ---- People ----------------------------------------------- */
-export const LEAD = {
-  name:  "Matheen Amman",
-  role:  "MCVP",
-  org:   "National Showcasing Team · AIESEC in Sri Lanka",
-  initials: "MA",
-  blurb: "Leading the National Showcasing Team through term 26.27 — and the person to " +
-         "reach for partnerships, national-level requests and anything the series needs."
-};
+export const LEAD = { name: "Matheen", role: "MCVP BnM and NST Head", photo: "assets/img/team-matheen.jpg" };
 
 export const MANAGERS = [
-  { name: "Fathima",  role: "Brand Manager",       photo: "assets/img/team-fathima.jpg",  tilt: "-2.5deg" },
-  { name: "Dulain",   role: "Showcasing Manager",  photo: "assets/img/team-dulain.jpg",   tilt: "1.8deg"  },
-  { name: "Sathini",  role: "HR Manager",          photo: "assets/img/team-sathini.jpg",  tilt: "2.2deg"  },
-  { name: "Shahnaas", role: "B2B Manager",         photo: "assets/img/team-shahnaas.jpg", tilt: "-1.6deg" }
-];
-
-/* Leadership Body — the members running this workshop series.
-   Photos are cropped from the Leadership Body poster. An empty "photo"
-   falls back to initials. */
-export const LEADERSHIP = [
-  { name: "Rasuwan",  role: "Brand Architect",  photo: "assets/img/team-rasuwan.jpg" },
-  { name: "Januki",   role: "Production Head",  photo: "assets/img/team-januki.jpg" },
-  { name: "Achintha", role: "Video Director",   photo: "assets/img/team-achintha.jpg" },
-  { name: "Nimna",    role: "Art Director",     photo: "assets/img/team-nimna.jpg" }
+  { name: "Fathima",  role: "Brand Manager",       photo: "assets/img/team-fathima.jpg" },
+  { name: "Dulain",   role: "Showcasing Manager",  photo: "assets/img/team-dulain.jpg" },
+  { name: "Sathini",  role: "HR Manager",          photo: "assets/img/team-sathini.jpg" },
+  { name: "Shahnaas", role: "B2B Manager",         photo: "assets/img/team-shahnaas.jpg" }
 ];
 
 /* ---- All entities, grouped, for the registration dropdown -- */
