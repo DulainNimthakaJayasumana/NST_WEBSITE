@@ -125,7 +125,7 @@ export const WORKSHOPS = [
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Sri Jayewardenepura",
     joinUrl: "",
-    facilitators: ["Dulain", "Adhithya", "Achintha"],
+    facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "A full hands-on day: Digital Experience Platform fundamentals before lunch, " +
@@ -147,7 +147,7 @@ export const WORKSHOPS = [
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Peradeniya",
     joinUrl: "",
-    facilitators: ["Dulain", "Adhithya", "Achintha"],
+    facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster — " +
@@ -165,7 +165,7 @@ export const MODULES = [
     id: "dxp",
     title: "DXP",
     full: "Digital Experience Platform",
-    facilitators: ["Dulain", "Adhithya"],
+    facilitators: ["Dulain", "Achintha"],
     covers: "Basic DXP theories",
     where: "Physical workshops only"
   },
@@ -291,7 +291,6 @@ export const FAQ = [
     q: "Who is teaching?",
     a: "Each session card names its facilitators. Graphics Design is " +
        crew("graphics-online") + "; Video Editing is " + crew("video-editing-online") +
-       ". On the physical days, DXP is led by " + crew("dxp") + ", and videography " +
-       "by " + crew("videography") + "."
+       ". On the physical days, DXP and videography are both led by " + crew("dxp") + "."
   }
 ];
