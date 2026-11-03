@@ -111,14 +111,19 @@ Firebase"* instead of *"local mode"*.
 > These keys are meant to be public. They identify the project, they do not
 > grant access. Access is controlled by the rules in the next step.
 
-### 4.3 Create the team account
+### 4.3 Turn on Google sign-in
 
-**Authentication → Get started → Email/Password → Enable**, then
-**Users → Add user** and create one account for the team, e.g.
-`showcasing@aiesec.lk`.
+**Authentication → Get started → Sign-in method → Google → Enable**, choose a
+support email and save. Team members sign in with their own Google accounts, so
+there are no accounts or passwords to create.
 
-That account is what `admin.html` signs in with once Firebase is connected,
-and it is what the security rules check.
+To give someone access, add their lower-case email to `team()` in
+`firestore.rules` and publish the rules again. Anyone else can complete the
+Google sign-in, but the admin page signs them straight out and the rules refuse
+their reads and writes.
+
+When the site is hosted, add its address under **Authentication → Settings →
+Authorized domains**, or the sign-in window will refuse to open.
 
 ### 4.4 Publish the rules
 
@@ -240,9 +245,8 @@ The **Admin** link in the footer opens `admin.html`: stats, every registered
 person, search and filter, **Export to Excel** (a real .xlsx with sheets for
 registrations, sessions and entities), the live switch and the session editors.
 
-- **Firebase connected:** sign in with the email and password of a Firebase Auth
-  account (Authentication > Users > Add user). This is the real protection, because
-  `firestore.rules` only lets signed-in users read registrations.
+- **Firebase connected:** sign in with Google. This is the real protection, because
+  `firestore.rules` only lets the emails listed in `team()` read registrations.
 - **Firebase not connected:** a simple password (`ADMIN_PASSPHRASE` in
   `firebase-config.js`) opens the page, and it only shows registrations made in that
   same browser. Anyone can read that password in the source, so it is not security.

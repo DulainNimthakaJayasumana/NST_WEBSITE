@@ -12,7 +12,7 @@ import { buildWorkbook } from "./xlsx.js";
 import {
   getModeAsync, setLiveSettings, saveWorkshop,
   listRegistrations, listMessages, onLiveSettings,
-  signIn, onAuth
+  signInWithGoogle, hasTeamAccess, signOutTeam, onAuth
 } from "./store.js";
 
 mountChrome({ active: "" });
@@ -20,14 +20,43 @@ mountChrome({ active: "" });
 const GATE_KEY = "nst2:admin";
 
 /* ---------- gate ----------
-   With Firebase connected this is a real Auth sign-in, because that is
-   what firestore.rules checks. Without it, nothing is at stake, so the
-   local passphrase is enough to keep the panel out of the way. */
+   With Firebase connected this is Google sign-in, and firestore.rules decides
+   which accounts get in. Without it, nothing is at stake, so the local
+   passphrase is enough to keep the panel out of the way. */
 const gate   = document.getElementById("gate");
 const panel  = document.getElementById("panel");
 const gForm  = document.getElementById("gateForm");
-const gErr   = document.getElementById("gateErr");
+const gMsg   = document.getElementById("gateMsg");
 let cloudGate = false;
+
+function gateMessage(text){
+  gMsg.textContent = text;
+  gMsg.classList.toggle("is-on", !!text);
+}
+
+/* Google lets any account sign in, so check this one is on the team's list. */
+async function admit(user){
+  gateMessage("");
+  try{
+    if (await hasTeamAccess()){
+      document.getElementById("signOutBtn").hidden = false;
+      document.getElementById("signedInAs").textContent = `Signed in as ${user.email}.`;
+      openPanel();
+    }else{
+      await signOutTeam();
+      gateMessage(`${user.email} does not have admin access. Sign in with a team account.`);
+    }
+  }catch(err){
+    console.warn(err);
+    gateMessage("Could not check your access. Check the connection and try again.");
+  }
+}
+
+const SIGN_IN_ERRORS = {
+  "auth/popup-blocked": "Your browser blocked the sign-in window. Allow pop-ups for this site and try again.",
+  "auth/unauthorized-domain": "This website address is not allowed yet. Add it under Authentication > Settings > Authorized domains in Firebase.",
+  "auth/operation-not-allowed": "Google sign-in is not turned on yet. Enable it under Authentication > Sign-in method in Firebase."
+};
 
 function openPanel(){
   gate.hidden = true;
@@ -38,13 +67,11 @@ function openPanel(){
 getModeAsync().then(mode => {
   cloudGate = mode === "cloud";
   if (cloudGate){
-    document.getElementById("emailField").hidden = false;
-    document.getElementById("passLabel").textContent = "Password";
-    document.getElementById("gateBtn").textContent = "Sign in";
+    document.getElementById("passField").hidden = true;
+    document.getElementById("gateBtn").textContent = "Sign in with Google";
     document.getElementById("gateLead").textContent =
-      "Sign in with the team account to change the schedule and the live switch.";
-    gErr.textContent = "That did not sign in — check the email and password.";
-    onAuth(user => { if (user) openPanel(); });
+      "Sign in with your AIESEC Google account to open the control room.";
+    onAuth(user => { if (user) admit(user); });
   }else{
     document.getElementById("gateLead").innerHTML =
       "Firebase is not connected, so this panel only affects <b>this browser</b>.";
@@ -70,18 +97,22 @@ gForm.addEventListener("submit", async e => {
 
   const btn = document.getElementById("gateBtn");
   btn.disabled = true;
-  const prev = btn.textContent;
-  btn.textContent = "Signing in…";
+  gateMessage("");
   try{
-    await signIn(document.getElementById("gEmail").value.trim(), passEl.value);
-    openPanel();                      // onAuth fires too; openPanel is idempotent
+    await signInWithGoogle();         // onAuth takes it from here
   }catch(err){
     console.warn(err);
-    field.classList.add("has-err");
+    if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request"){
+      gateMessage(SIGN_IN_ERRORS[err.code] || "That did not sign in. Try again.");
+    }
   }finally{
     btn.disabled = false;
-    btn.textContent = prev;
   }
+});
+
+document.getElementById("signOutBtn").addEventListener("click", async () => {
+  await signOutTeam();
+  location.reload();
 });
 
 /* ---------- boot ---------- */

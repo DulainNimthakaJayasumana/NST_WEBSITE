@@ -25,16 +25,13 @@
         Stats, registrations, the live switch and session details.
       </p>
       <form class="form" id="gateForm">
-        <div class="field" id="emailField" hidden>
-          <label for="gEmail">Team email</label>
-          <input id="gEmail" type="email" autocomplete="username" placeholder="team@aiesec.lk">
-        </div>
-        <div class="field">
+        <div class="field" id="passField">
           <label for="pass" id="passLabel">Password</label>
           <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
           <span class="field__err" id="gateErr">That is not the password.</span>
         </div>
         <button class="btn btn--block" type="submit" id="gateBtn">Open</button>
+        <p class="form__msg form__msg--err" id="gateMsg" role="alert"></p>
       </form>
     </div>
   </section>
@@ -44,7 +41,9 @@
     <div class="shell">
 
       <h1 class="title title--lg">Admin</h1>
-      <p class="muted" id="modeLine" style="margin:10px 0 18px"></p>
+      <p class="muted" id="modeLine" style="margin:10px 0 6px"></p>
+      <p class="muted" style="margin:0 0 18px"><span id="signedInAs"></span>
+        <button class="btn btn--ghost btn--sm" type="button" id="signOutBtn" hidden>Sign out</button></p>
       <div id="cfgWarn"></div>
 
       <!-- stats -->

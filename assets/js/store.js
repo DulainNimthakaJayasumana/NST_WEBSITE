@@ -56,15 +56,32 @@ export function getMode(){ return mode; }
 export async function getModeAsync(){ await ready(); return mode; }
 
 /* ---------- team sign-in (admin page only) ----------
-   In cloud mode this is a real Firebase Auth account, which is what
-   firestore.rules checks. In local mode there is nothing to protect,
-   so the admin page falls back to its passphrase. */
-export async function signIn(email, password){
+   In cloud mode this is Google sign-in. Who counts as the team is decided by
+   the email list in firestore.rules, so that list never ships to the browser.
+   In local mode there is nothing to protect, so the admin page falls back to
+   its passphrase. */
+export async function signInWithGoogle(){
   await ready();
   if (mode !== "cloud") throw new Error("Firebase is not connected.");
-  const { signInWithEmailAndPassword } = fb.authApi;
-  const cred = await signInWithEmailAndPassword(fb.auth, email, password);
+  const { GoogleAuthProvider, signInWithPopup } = fb.authApi;
+  const provider = new GoogleAuthProvider();
+  provider.setCustomParameters({ hd: "aiesec.net", prompt: "select_account" });
+  const cred = await signInWithPopup(fb.auth, provider);
   return cred.user;
+}
+
+/* Asks the server, using a read only the team may make. */
+export async function hasTeamAccess(){
+  await ready();
+  if (mode !== "cloud") return false;
+  const { collection, getDocsFromServer, query, limit } = fb.api;
+  try{
+    await getDocsFromServer(query(collection(fb.db, PATHS.registrations), limit(1)));
+    return true;
+  }catch(err){
+    if (err.code === "permission-denied") return false;
+    throw err;
+  }
 }
 
 export async function signOutTeam(){
