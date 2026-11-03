@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact — NextGen Storytellers 2.0</title>
+<meta name="description" content="Reach the National Showcasing Team of AIESEC in Sri Lanka — MCVP Matheen Amman and the team behind NextGen Storytellers 2.0.">
+<meta name="theme-color" content="#05020e">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- ===== the team, top to bottom ===== -->
+  <section class="section" id="people" style="padding-top:clamp(120px,16vh,170px)">
+    <div class="shell">
+      <h1 class="sr-only">The people running it</h1>
+      <p class="eyebrow" data-in style="--i:0;text-align:center;margin-bottom:clamp(28px,4vw,48px)">
+        The people running it &middot; National Showcasing Team &middot; 26.27 Semester 01
+      </p>
+
+      <div class="org">
+        <div class="org__lead" id="orgLead" data-in style="--i:1"></div>
+
+        <div class="org__label">Management Team</div>
+        <div class="org__row" id="orgManagers"></div>
+
+        <div class="org__label">Leadership Body</div>
+        <div class="org__row" id="orgLB"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== form + links ===== -->
+  <section class="section section--tight">
+    <div class="shell">
+      <div class="contactgrid">
+
+        <div class="reveal">
+          <h2 class="title title--lg" style="margin-bottom:clamp(24px,3vw,40px)">Ask us anything</h2>
+          <form class="form" id="msgForm" novalidate>
+            <div class="form__grid">
+              <div class="field">
+                <label for="cName">Your name <span class="req">*</span></label>
+                <input id="cName" type="text" autocomplete="name" placeholder="Your name" required>
+                <span class="field__err">Please add your name.</span>
+              </div>
+              <div class="field">
+                <label for="cEmail">Email <span class="req">*</span></label>
+                <input id="cEmail" type="email" autocomplete="email" placeholder="you@entity.lk" required>
+                <span class="field__err">That does not look like an email address.</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="cSubject">What is it about?</label>
+              <select id="cSubject">
+                <option>A question about a workshop</option>
+                <option>Registration help</option>
+                <option>Bringing the workshop to my entity</option>
+                <option>Partnership / B2B</option>
+                <option>Something else</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="cBody">Message <span class="req">*</span></label>
+              <textarea id="cBody" placeholder="Tell us what you need." required></textarea>
+              <span class="field__err">Add a line or two so we can help.</span>
+            </div>
+            <div class="form__msg" id="cMsg"></div>
+            <div><button class="btn btn--lg" type="submit" id="cSubmit">Send message</button></div>
+          </form>
+        </div>
+
+        <div class="reveal" data-d="1">
+          <span class="eyebrow">Find us</span>
+          <div class="contact-links" id="links"></div>
+          <a class="btn btn--ghost" href="register.html" style="margin-top:26px">Registering? Go straight to the form</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="assets/js/contact.js"></script>
+</body>
+</html>

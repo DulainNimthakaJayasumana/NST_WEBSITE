@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NextGen Storytellers 2.0 — Workshop Series | National Showcasing Team</title>
+<meta name="description" content="NextGen Storytellers 2.0 — a workshop series by the National Showcasing Team, AIESEC in Sri Lanka. Online masterclasses in design and video editing, then hands-on physical workshops in Colombo and Kandy.">
+<meta name="theme-color" content="#05020e">
+
+<meta property="og:title" content="NextGen Storytellers 2.0 — Workshop Series">
+<meta property="og:description" content="Design, edit, shoot and publish. Proudly presented by the National Showcasing Team, AIESEC in Sri Lanka.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/img/management-team.jpg">
+
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero__meta" data-in style="--i:0">
+      <span>Proudly presented by the National Showcasing Team</span>
+      <span>Season 2 &middot; 26.27 Semester 01</span>
+    </div>
+
+    <div class="hero__main">
+      <h1 class="hero__brand" data-in style="--i:1">
+        <img id="heroLogo" src="assets/img/nextgen-logo.png" alt="NextGen Storytellers 2.0">
+        <span class="sr-only">Workshop Series</span>
+      </h1>
+      <p class="hero__learn" data-in style="--i:2">
+        <span>Learn to</span>
+        <span class="rotator" id="rotator" aria-label="design, edit, shoot, publish"></span>
+      </p>
+    </div>
+
+    <!-- Black-backed clip; mix-blend-mode:screen drops the black out. It must
+         sit in the page's root stacking context for that to reach the sky. -->
+    <video class="hero__clip" id="heroVideo" src="assets/video/nst-animated-logo.mp4"
+           autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+
+    <div class="hero__facts" data-in style="--i:3">
+      <div class="hero__fact"><b>Online</b><span>9 &ndash; 13 November</span></div>
+      <div class="hero__fact"><b>Colombo</b><span>Saturday 21 November</span></div>
+      <div class="hero__fact"><b>Kandy</b><span>Saturday 28 November</span></div>
+      <a class="btn btn--lg" href="register.html">Register</a>
+    </div>
+  </section>
+
+  <div class="marquee marquee--outline" id="tagMarquee" style="--speed:44s" aria-hidden="true"></div>
+
+  <!-- ============ COUNTDOWN ============ -->
+  <section class="section section--tight" id="countdown">
+    <div class="shell">
+      <div class="countdown reveal" id="countdownBox">
+        <div class="countdown__head">
+          <div class="countdown__what">
+            <span class="eyebrow">Next up</span>
+            <h3>Loading the schedule&hellip;</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SESSIONS ============ -->
+  <section class="section" id="sessions">
+    <div class="shell">
+      <div class="section-head section-head--split reveal">
+        <h2 class="title title--lg">The line-up</h2>
+        <p class="lede">Two online masterclasses, then a full hands-on day in Colombo and the
+          same again in Kandy. Tick only the ones you want.</p>
+      </div>
+      <div class="lineup" id="sessionGrid"></div>
+      <div class="btn-row reveal" style="margin-top:32px">
+        <a class="btn btn--ghost" href="workshops.html">Full details and day agenda</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TIMELINE (pins and scrolls sideways on desktop) ============ -->
+  <section class="hscroll" id="series">
+    <div class="hscroll__pin">
+      <div class="hscroll__head">
+        <h2 class="title title--md">The road map</h2>
+      </div>
+      <div class="roadmap" id="roadmap"></div>
+    </div>
+  </section>
+
+  <!-- ============ ENTITIES ============ -->
+  <section class="section section--tight" aria-label="Entities taking part">
+    <div class="shell" style="margin-bottom:18px">
+      <span class="eyebrow">20 entities taking part</span>
+    </div>
+    <div class="marquee" id="entityMarquee" style="--speed:70s"></div>
+  </section>
+
+  <!-- ============ OUTCOMES ============ -->
+  <section class="section section--tight">
+    <div class="shell">
+      <div class="section-head reveal">
+        <h2 class="title title--lg">Skills, not slides</h2>
+      </div>
+      <div class="outcomes" id="outcomes"></div>
+    </div>
+  </section>
+
+  <!-- ============ RECAP ============ -->
+  <section class="section" id="recap">
+    <div class="shell">
+      <div class="recap">
+        <div class="recap__copy reveal">
+          <span class="eyebrow">Season 1</span>
+          <h2 class="title title--lg">We did this once already</h2>
+          <p class="lede">Here is what NextGen Storytellers 1.0 looked like. Season 2 builds on it.</p>
+          <div class="btn-row">
+            <button class="btn" id="recapBtn" type="button">Play the recap</button>
+            <a class="btn btn--ghost" href="register.html">Join 2.0</a>
+          </div>
+        </div>
+
+        <div class="recap__visual reveal" id="recapCard" data-cursor="Play">
+          <video id="recapVideo" playsinline preload="metadata"
+                 src="assets/video/recap-nextgen-1.mp4#t=1.2"></video>
+          <button class="recap__play" id="recapPlay" type="button"
+                  aria-label="Play the NextGen Storytellers 1.0 recap">
+            <span class="recap__btn">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+          </button>
+          <span class="recap__tag">NextGen Storytellers 1.0 recap</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="section" id="faq">
+    <div class="shell">
+      <div class="faqwrap">
+        <div class="faqwrap__head reveal">
+          <h2 class="title title--lg">Questions</h2>
+          <p class="lede">What people ask before they sign up. If yours is not here, the team
+            is one message away.</p>
+          <a class="btn btn--ghost btn--sm" href="contact.html">Ask the team</a>
+        </div>
+        <div class="faq" id="faqList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CTA ============ -->
+  <a class="bigcta" href="register.html" data-cursor="Go">
+    <span>Save your seat</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z"/></svg>
+  </a>
+  <div class="subrow">
+    <p class="lede">Not ready to pick yet? Leave your email and we will keep you posted as
+      links and venues are confirmed.</p>
+    <form class="form" id="subForm">
+      <div class="field">
+        <label for="subEmail">Your email</label>
+        <div style="display:flex;gap:14px;align-items:flex-end">
+          <input id="subEmail" type="email" placeholder="you@entity.lk" required style="flex:1;min-width:0">
+          <button class="btn btn--sm" type="submit">Keep me posted</button>
+        </div>
+      </div>
+      <div class="form__msg" id="subMsg"></div>
+    </form>
+  </div>
+
+</main>
+
+<script type="module" src="assets/js/home.js"></script>
+</body>
+</html>

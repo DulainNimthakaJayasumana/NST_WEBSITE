@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workshops — NextGen Storytellers 2.0</title>
+<meta name="description" content="Every session in NextGen Storytellers 2.0: online masterclasses in graphics and video editing, and full-day physical workshops in Colombo and Kandy.">
+<meta name="theme-color" content="#05020e">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+
+  <section class="section" style="padding-top:clamp(120px,16vh,170px)">
+    <div class="shell">
+      <h1 class="title title--xl" data-in style="--i:0">Workshops</h1>
+      <p class="lede" data-in style="--i:1;margin:22px 0 clamp(36px,5vw,64px)">
+        Two online masterclasses and two full hands-on days, one for the Colombo cluster
+        and one for Kandy. Links, venues and times land here as they are confirmed.
+      </p>
+
+      <div class="filters" role="tablist" aria-label="Filter sessions" data-in style="--i:2">
+        <button class="filter is-on" data-filter="all"      role="tab" aria-selected="true">All sessions</button>
+        <button class="filter"       data-filter="online"   role="tab" aria-selected="false">Online</button>
+        <button class="filter"       data-filter="physical" role="tab" aria-selected="false">Physical</button>
+        <button class="filter"       data-filter="upcoming" role="tab" aria-selected="false">Still to come</button>
+      </div>
+
+      <div class="lineup" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="online">
+    <div class="shell">
+      <div class="section-head section-head--split reveal">
+        <h2 class="title title--lg">The online week</h2>
+        <p class="lede">9 to 13 November, live on Google Meet. Join from anywhere.</p>
+      </div>
+      <div class="facts3 reveal">
+        <div>
+          <h3>Have the software installed</h3>
+          <p>Photoshop for the design session, Premiere Pro and After Effects for the editing session.</p>
+        </div>
+        <div>
+          <h3>Illustrator is optional</h3>
+          <p>It is on the list for the graphics session, but you can follow along without it.</p>
+        </div>
+        <div>
+          <h3>The link comes to you</h3>
+          <p>When a session starts, this site turns into a join screen with the meeting link on it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="modules">
+    <div class="shell">
+      <div class="section-head reveal">
+        <h2 class="title title--lg">Inside the physical days</h2>
+      </div>
+      <div class="modules" id="modules-grid"></div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="agenda">
+    <div class="shell">
+      <div class="section-head section-head--split reveal">
+        <h2 class="title title--lg">The day, hour by hour</h2>
+        <p class="lede">The same running order in both cities. Venues are announced here once confirmed.</p>
+      </div>
+      <div class="agenda" id="agenda-list"></div>
+    </div>
+  </section>
+
+  <section class="section section--tight" id="entities">
+    <div class="shell">
+      <div class="section-head section-head--split reveal">
+        <h2 class="title title--lg">Find your cluster</h2>
+        <p class="lede">Each physical day is planned around a cluster of entities. If yours is not
+          listed, pick &ldquo;Other / not listed&rdquo; when you register and ask us on the contact page.</p>
+      </div>
+      <div class="clusters" id="clusters"></div>
+    </div>
+  </section>
+
+  <a class="bigcta" href="register.html" data-cursor="Go">
+    <span>Pick your session</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12.2l-4.6-4.6L14 6l7 7-7 7-1.4-1.4 4.6-4.6H5z"/></svg>
+  </a>
+
+</main>
+
+<script type="module" src="assets/js/workshops.js"></script>
+</body>
+</html>

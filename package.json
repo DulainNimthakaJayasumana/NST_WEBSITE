@@ -1,0 +1,9 @@
+{
+  "name": "nextgen-storytellers",
+  "version": "2.0.0",
+  "private": true,
+  "description": "NextGen Storytellers 2.0 workshop series site. National Showcasing Team, AIESEC in Sri Lanka.",
+  "scripts": {
+    "start": "node serve.js"
+  }
+}

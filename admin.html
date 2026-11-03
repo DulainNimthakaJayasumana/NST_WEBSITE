@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — NextGen Storytellers 2.0</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#05020e">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+
+  <!-- ===== gate ===== -->
+  <section class="section" id="gate" style="padding-top:clamp(120px,18vh,190px)">
+    <div class="shell" style="max-width:520px;margin-inline:auto">
+      <h1 class="title title--lg" style="margin-bottom:14px">Admin</h1>
+      <p class="muted" style="margin-bottom:30px" id="gateLead">
+        Stats, registrations, the live switch and session details.
+      </p>
+      <form class="form" id="gateForm">
+        <div class="field" id="emailField" hidden>
+          <label for="gEmail">Team email</label>
+          <input id="gEmail" type="email" autocomplete="username" placeholder="team@aiesec.lk">
+        </div>
+        <div class="field">
+          <label for="pass" id="passLabel">Password</label>
+          <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
+          <span class="field__err" id="gateErr">That is not the password.</span>
+        </div>
+        <button class="btn btn--block" type="submit" id="gateBtn">Open</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== panel ===== -->
+  <section class="section" id="panel" hidden style="padding-top:clamp(110px,14vh,150px)">
+    <div class="shell">
+
+      <h1 class="title title--lg">Admin</h1>
+      <p class="muted" id="modeLine" style="margin:10px 0 18px"></p>
+      <div id="cfgWarn"></div>
+
+      <!-- stats -->
+      <div class="kpis" id="kpis"></div>
+      <div class="adm2">
+        <div><h2 class="adm-h">By session</h2><div id="statSessions"></div></div>
+        <div><h2 class="adm-h">By entity</h2><div id="statEntities"></div></div>
+      </div>
+
+      <!-- registrations -->
+      <div class="adm-block">
+        <div class="adm-bar">
+          <div>
+            <h2 class="title title--md">Registered people</h2>
+            <p class="muted" id="regCount"></p>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn--ghost btn--sm" id="refreshBtn">Refresh</button>
+            <button class="btn btn--sm" id="xlsxBtn">Export to Excel</button>
+          </div>
+        </div>
+        <div class="form__grid" style="margin-bottom:18px">
+          <div class="field">
+            <label for="regSearch">Search</label>
+            <input id="regSearch" type="search" placeholder="Name, email, entity, reference">
+          </div>
+          <div class="field">
+            <label for="regSession">Session</label>
+            <select id="regSession"><option value="">All sessions</option></select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data" id="regTable">
+            <thead><tr></tr></thead>
+            <tbody><tr><td class="muted">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- schedule -->
+      <div class="adm2 adm-block">
+        <div>
+          <h2 class="title title--md" style="margin-bottom:6px">Live switch</h2>
+          <p class="muted" style="margin-bottom:22px">Controls the "happening now" screen.</p>
+          <div class="form">
+            <div class="field">
+              <label for="liveMode">Mode</label>
+              <select id="liveMode">
+                <option value="auto">Automatic: go live by the clock</option>
+                <option value="force-on">Force on: show it now</option>
+                <option value="force-off">Force off: never show it</option>
+              </select>
+              <span class="field__hint" id="modeHint"></span>
+            </div>
+            <div class="field">
+              <label for="liveWorkshop">Session</label>
+              <select id="liveWorkshop"></select>
+            </div>
+            <div class="field">
+              <label for="liveJoin">Join link (overrides the session's own)</label>
+              <input id="liveJoin" type="url" placeholder="https://meet.google.com/...">
+            </div>
+            <div class="field">
+              <label for="liveMsg">Message on the live screen</label>
+              <input id="liveMsg" type="text" placeholder="We are starting in 5. Come in.">
+            </div>
+            <div><button class="btn" id="saveLive">Apply</button></div>
+            <a class="field__hint" href="index.html?preview=live" target="_blank" style="text-decoration:underline">Preview the live screen on this browser only</a>
+          </div>
+        </div>
+        <div>
+          <h2 class="title title--md" style="margin-bottom:6px">Sessions</h2>
+          <p class="muted" style="margin-bottom:22px">Set the real date, venue and meeting link.</p>
+          <div id="editors"></div>
+        </div>
+      </div>
+
+      <!-- messages -->
+      <div class="adm-block">
+        <h2 class="title title--md">Messages</h2>
+        <p class="muted" id="msgCount" style="margin-bottom:16px"></p>
+        <div id="msgList"></div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>

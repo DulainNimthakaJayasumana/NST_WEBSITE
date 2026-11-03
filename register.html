@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register — NextGen Storytellers 2.0</title>
+<meta name="description" content="Register for NextGen Storytellers 2.0. Tick the sessions you want to attend: online masterclasses, or the physical workshops in Colombo and Kandy.">
+<meta name="theme-color" content="#05020e">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+  <section class="section" style="padding-top:clamp(120px,16vh,170px)">
+    <div class="shell">
+
+      <!-- ===== the form ===== -->
+      <div id="formWrap" class="regwrap">
+        <div class="regwrap__head">
+          <h1 class="title title--lg" data-in style="--i:0">Save your seat</h1>
+          <p class="lede" data-in style="--i:1">
+            One form for the whole series. Tick only the sessions you want. You do not
+            have to take them all.
+          </p>
+        </div>
+
+        <form class="form" id="regForm" novalidate data-in style="--i:2">
+          <div class="field">
+            <label>Which sessions? <span class="req">*</span></label>
+            <div class="pickers" id="pickers"></div>
+            <span class="field__err" id="errWorkshop">Tick at least one session to continue.</span>
+          </div>
+
+          <div class="form__grid">
+            <div class="field">
+              <label for="name">Full name <span class="req">*</span></label>
+              <input id="name" name="name" type="text" autocomplete="name" placeholder="Your name" required>
+              <span class="field__err">We need a name for the attendance list.</span>
+            </div>
+            <div class="field">
+              <label for="email">Email <span class="req">*</span></label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@entity.lk" required>
+              <span class="field__err">That does not look like an email address.</span>
+            </div>
+          </div>
+
+          <div class="form__grid">
+            <div class="field">
+              <label for="phone">WhatsApp number <span class="req">*</span></label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="07X XXX XXXX" required>
+              <span class="field__err">Enter a full phone number.</span>
+            </div>
+            <div class="field">
+              <label for="entity">Your entity <span class="req">*</span></label>
+              <select id="entity" name="entity" required></select>
+              <span class="field__err">Choose your entity, or "Other".</span>
+            </div>
+          </div>
+
+          <div class="form__grid">
+            <div class="field">
+              <label for="role">Role in AIESEC</label>
+              <select id="role" name="role">
+                <option value="">Select one</option>
+                <option>Member</option>
+                <option>Team Leader</option>
+                <option>LCVP / EB</option>
+                <option>MC / National team</option>
+                <option>Alumni</option>
+                <option>Not in AIESEC yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="level">How much have you done before?</label>
+              <select id="level" name="level">
+                <option value="">Select one</option>
+                <option>Complete beginner</option>
+                <option>I have tried it a few times</option>
+                <option>I do this for my entity already</option>
+                <option>Confident — I want the advanced bits</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" id="modulesField" hidden>
+            <label>Which block are you most here for?</label>
+            <div class="form__grid" style="gap:12px;margin-top:8px">
+              <label class="checkline"><input type="checkbox" name="modules" value="DXP"> DXP</label>
+              <label class="checkline"><input type="checkbox" name="modules" value="Videography"> Videography</label>
+            </div>
+            <span class="field__hint">Both run on the day.</span>
+          </div>
+
+          <div class="field" id="dietField" hidden>
+            <label for="diet">Dietary requirements</label>
+            <input id="diet" name="diet" type="text" placeholder="Vegetarian, halal, allergies, or leave blank">
+          </div>
+
+          <div class="field">
+            <label for="notes">Anything else?</label>
+            <textarea id="notes" name="notes" placeholder="Questions, access needs, or what you are hoping to get out of it."></textarea>
+          </div>
+
+          <label class="checkline">
+            <input type="checkbox" id="consent" required>
+            <span>I am happy for the National Showcasing Team to contact me about this
+                  workshop series. <span class="req">*</span></span>
+          </label>
+
+          <div class="form__msg" id="formMsg"></div>
+
+          <button class="btn btn--lg btn--block" type="submit" id="submitBtn">Confirm my place</button>
+        </form>
+      </div>
+
+      <!-- ===== success ===== -->
+      <div id="doneWrap" hidden>
+        <h1 class="title title--xl" style="text-align:center;margin-bottom:clamp(28px,4vw,56px)">See you there</h1>
+        <div class="pass" id="pass"></div>
+        <div class="btn-row" style="justify-content:center;margin-top:30px">
+          <a class="btn btn--ghost" href="workshops.html">Back to the line-up</a>
+          <button class="btn btn--ghost" id="againBtn">Register someone else</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<script type="module" src="assets/js/register.js"></script>
+</body>
+</html>
