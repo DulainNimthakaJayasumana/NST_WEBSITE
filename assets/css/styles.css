@@ -459,10 +459,9 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 /* ---------- footer ---------- */
 .footer{ position:relative; padding-top:clamp(48px,6vw,80px); margin-top:clamp(40px,6vw,80px); border-top:1px solid var(--hair); overflow:hidden; }
 .footer__top{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.5fr); gap:32px clamp(32px,6vw,100px); }
-.footer__brand img{ height:56px; width:auto; }
+.footer__brand img{ height:56px; width:auto; margin-left:-8px; } /* the PNG has 8px of empty space on its left */
 .footer__brand p{ margin:18px 0; color:var(--muted); max-width:44ch; }
-.footer__org{ display:flex; align-items:center; gap:14px; color:var(--muted); font-size:.92rem; }
-.footer__org img{ height:30px; }
+.footer__org{ color:var(--muted); font-size:.92rem; }
 .footer__socials{ display:flex; gap:14px; margin-top:20px; }
 .footer__socials svg{ width:20px; height:20px; fill:var(--muted); transition:fill .25s; }
 .footer__socials a:hover svg{ fill:var(--star); }

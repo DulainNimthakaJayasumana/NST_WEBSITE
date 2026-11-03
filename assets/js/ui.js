@@ -458,16 +458,13 @@ function mountFooter(){
     <div class="shell">
       <div class="footer__top">
         <div class="footer__brand">
-          <img src="assets/img/nextgen-logo.png" alt="${esc(SERIES.name)}">
+          <a href="${esc(c.aiesec || "https://aiesec.lk")}" target="_blank" rel="noopener">
+            <img src="assets/img/aiesec-logo-white.png" alt="${esc(SERIES.org)}">
+          </a>
           <p>${esc(SERIES.name)} — the ${esc(SERIES.kicker.toLowerCase())} run by the
              ${esc(SERIES.presenter)} of ${esc(SERIES.org)}, training the next generation of
              storytellers across every entity in the country.</p>
-          <div class="footer__org">
-            <span>An initiative of</span>
-            <a href="${esc(c.aiesec || "https://aiesec.lk")}" target="_blank" rel="noopener">
-              <img src="assets/img/aiesec-logo-white.png" alt="${esc(SERIES.org)}">
-            </a>
-          </div>
+          <div class="footer__org">An initiative of the ${esc(SERIES.presenter)}</div>
           ${social.length ? `<div class="footer__socials">${social.map(s =>
             `<a href="${esc(s.href)}" target="_blank" rel="noopener" aria-label="${esc(s.label)}">${icon(s.ic)}</a>`
           ).join("")}</div>` : ""}
