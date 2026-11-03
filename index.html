@@ -38,18 +38,16 @@
         <span>Learn to</span>
         <span class="rotator" id="rotator" aria-label="design, edit, shoot, publish"></span>
       </p>
+      <!-- Black-backed clip; mix-blend-mode:screen drops the black out. It must
+           sit in the page's root stacking context for that to reach the sky. -->
+      <video class="hero__clip" id="heroVideo" src="assets/video/nst-animated-logo.mp4"
+             autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
     </div>
-
-    <!-- Black-backed clip; mix-blend-mode:screen drops the black out. It must
-         sit in the page's root stacking context for that to reach the sky. -->
-    <video class="hero__clip" id="heroVideo" src="assets/video/nst-animated-logo.mp4"
-           autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
 
     <div class="hero__facts" data-in style="--i:3">
       <div class="hero__fact"><b>Online</b><span>9 &ndash; 13 November</span></div>
       <div class="hero__fact"><b>Colombo</b><span>Saturday 21 November</span></div>
       <div class="hero__fact"><b>Kandy</b><span>Saturday 28 November</span></div>
-      <a class="btn btn--lg" href="register.html">Register</a>
     </div>
   </section>
 
