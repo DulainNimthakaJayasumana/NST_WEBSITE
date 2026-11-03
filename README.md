@@ -202,19 +202,17 @@ links simply do not appear until you add them.
 
 ---
 
-## 8. Dates that still need confirming
+## 8. Dates
 
-The Excel gave date *ranges*, not fixed times, so the site ships with
-provisional times and shows a "date to be confirmed" note wherever that is
-true. Set the real ones in the admin page and tick **Date is confirmed** —
-the note disappears by itself.
+All four dates are confirmed. To change one, edit it in the admin page. If you
+untick **Date is confirmed**, the site shows a "date to be confirmed" note.
 
-| Session | In the Excel | Shipped as |
-|---|---|---|
-| Graphics Design Masterclass | Online week, 9–13 Nov | Tue 10 Nov, 19:00–21:30 |
-| Video Editing Masterclass | Online week, 9–13 Nov | Thu 12 Nov, 19:00–21:00 |
-| Physical · Colombo | 21 **or** 22 Nov | Sat 21 Nov, 10:00–17:30 (Saturday, confirmed) |
-| Physical · Kandy | 28 **or** 29 Nov | Sat 28 Nov, 10:00–17:30 (Saturday, confirmed) |
+| Session | Date |
+|---|---|
+| Graphics Design Masterclass | Tue 10 Nov, 19:00–21:30 |
+| Video Editing Masterclass | Thu 12 Nov, 19:00–21:00 |
+| Physical · Colombo | Sat 21 Nov, 10:00–17:30 |
+| Physical · Kandy | Sat 28 Nov, 10:00–17:30 |
 
 All times are Asia/Colombo and are rendered in Sri Lanka time for every
 visitor, wherever they are.

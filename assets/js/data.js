@@ -81,12 +81,12 @@ export const WORKSHOPS = [
     track: "Design",
     startAt: "2026-11-10T19:00:00+05:30",
     endAt:   "2026-11-10T21:30:00+05:30",
-    dateConfirmed: false,
+    dateConfirmed: true,
     durationLabel: "2h 30min",
     platform: "Google Meet",
     joinUrl: "",
     facilitators: ["Rasuwan", "Nimna"],
-    tools: ["Adobe Photoshop", "Adobe Illustrator (optional)"],
+    tools: ["Adobe Photoshop"],
     resources: ["BlueBook", "AIESEC Resources Pack"],
     desc: "Brand-correct design from the ground up — the BlueBook rules, the AIESEC " +
           "resources pack, and a live Photoshop build of a real campaign asset.",
@@ -101,11 +101,11 @@ export const WORKSHOPS = [
     track: "Video",
     startAt: "2026-11-12T19:00:00+05:30",
     endAt:   "2026-11-12T21:00:00+05:30",
-    dateConfirmed: false,
+    dateConfirmed: true,
     durationLabel: "2h",
     platform: "Google Meet",
     joinUrl: "",
-    facilitators: ["Januki", "Adhithya"],
+    facilitators: ["Januki"],
     tools: ["Adobe Premiere Pro", "Adobe After Effects"],
     resources: [],
     desc: "Cut a story that holds attention — timeline craft in Premiere Pro, then " +
@@ -125,7 +125,7 @@ export const WORKSHOPS = [
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Sri Jayewardenepura",
     joinUrl: "",
-    facilitators: ["Madhuka", "Dulain", "Thushanth", "Achintha"],
+    facilitators: ["Dulain", "Adhithya", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "A full hands-on day: Digital Experience Platform fundamentals before lunch, " +
@@ -147,7 +147,7 @@ export const WORKSHOPS = [
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Peradeniya",
     joinUrl: "",
-    facilitators: ["Madhuka", "Dulain", "Thushanth", "Achintha"],
+    facilitators: ["Dulain", "Adhithya", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster — " +
@@ -165,7 +165,7 @@ export const MODULES = [
     id: "dxp",
     title: "DXP",
     full: "Digital Experience Platform",
-    facilitators: ["Madhuka", "Dulain", "Thushanth"],
+    facilitators: ["Dulain", "Adhithya"],
     covers: "Basic DXP theories",
     where: "Physical workshops only"
   },
@@ -247,7 +247,7 @@ export const FAQ = [
   },
   {
     q: "What is the difference between the online and the physical sessions?",
-    a: "The two online masterclasses run live on Google Meet in the week of 9 to 13 November — " +
+    a: "The two online masterclasses run live on Google Meet on 10 and 12 November — " +
        "Graphics Design and Video Editing, two to two and a half hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
@@ -263,7 +263,7 @@ export const FAQ = [
   {
     q: "What do I need to bring?",
     a: "For the online masterclasses, a laptop with the software installed — Photoshop " +
-       "for the design session (Illustrator is optional), and Premiere Pro plus After " +
+       "for the design session, and Premiere Pro plus After " +
        "Effects for the editing session. For the physical days, bring a laptop and your " +
        "phone. You do not need a camera."
   },
@@ -273,14 +273,6 @@ export const FAQ = [
        "comes up with a join button, and a bar across the top of every page keeps the " +
        "link handy while it runs. The same link shows on the session card. Until the " +
        "team has added the meeting link, that button reads “Session details” instead."
-  },
-  {
-    q: "Why do some dates say “to be confirmed”?",
-    a: "The two physical days are Saturdays: 21 November in Colombo and 28 November in " +
-       "Kandy. The online masterclasses fall in " +
-       "the week of 9 to 13 November and their exact days are provisional. When " +
-       "something is locked in it updates everywhere on this site — the session cards, " +
-       "the countdown and the registration form all read from the same schedule."
   },
   {
     q: "Are places limited?",
