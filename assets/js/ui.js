@@ -196,7 +196,75 @@ const NAV = [
   { href: "contact.html",   label: "Contact" }
 ];
 
+/* ---------- links to a section (#faq, #series, #online ...) ----------
+   Two problems, both fixed here for every page and device:
+   1. Arriving on a page with a #hash: the browser jumps at once, before the road
+      map pins (it adds thousands of pixels of height) and before the lists render,
+      so the page lands on the wrong section. We re-align each time the page height
+      changes, and stop the moment the visitor scrolls or touches the page.
+   2. Clicking a link to the page you are already on scrolls straight to the section. */
+function initAnchors(){
+  const clean = p => {                       // "/index.html", "/", "/index" all mean the home page
+    if (p.endsWith("index.html")) p = p.slice(0, -10);
+    else if (p.endsWith(".html")) p = p.slice(0, -5);
+    while (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
+    return p || "/";
+  };
+  const targetOf = hash => {
+    if (!hash || hash.length < 2 || hash === "#dulain") return null;   // #dulain is handled by contact.js
+    try { return document.getElementById(decodeURIComponent(hash.slice(1))); } catch { return null; }
+  };
+  const topOf = el => Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY));
+  const jump = hash => {
+    const el = targetOf(hash);
+    if (el) window.scrollTo({ top: topOf(el), behavior: "instant" });
+  };
+
+  let settling = false, ro = null, timer = 0;
+  const stop = () => {
+    settling = false;
+    ro?.disconnect(); ro = null;
+    clearTimeout(timer);
+    ["wheel", "touchstart", "pointerdown", "keydown"].forEach(t => window.removeEventListener(t, stop));
+  };
+  function settle(){
+    const hash = location.hash;
+    if (!targetOf(hash)) return;
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    settling = true;
+    const align = () => { if (settling) jump(hash); };
+    align();
+    if ("ResizeObserver" in window){
+      ro = new ResizeObserver(align);
+      ro.observe(document.documentElement);
+      ro.observe(document.body);
+    }
+    window.addEventListener("load", align, { once: true });
+    document.fonts?.ready.then(align);
+    ["wheel", "touchstart", "pointerdown", "keydown"].forEach(t => window.addEventListener(t, stop, { passive: true }));
+    timer = setTimeout(stop, 6000);
+  }
+  settle();
+
+  document.addEventListener("click", e => {
+    const link = e.target.closest?.("a[href*='#']");
+    if (!link || e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || link.target === "_blank") return;
+    const u = new URL(link.href, location.href);
+    if (u.origin !== location.origin || clean(u.pathname) !== clean(location.pathname)) return;
+    const el = targetOf(u.hash);
+    if (!el) return;
+    e.preventDefault();
+    stop();
+    if (location.hash !== u.hash) history.pushState(null, "", u.hash);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: topOf(el), behavior: reduced ? "instant" : "smooth" });
+  });
+
+  window.addEventListener("hashchange", () => { stop(); jump(location.hash); });
+}
+
 export function mountChrome({ active = "" } = {}){
+  initAnchors();
   /* --- background layers --- */
   if (!document.querySelector(".cosmos")){
     const cosmos = document.createElement("div");

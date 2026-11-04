@@ -1,16 +1,16 @@
 rules_version = '2';
 
 /* ============================================================
-   NextGen Storytellers 2.0 — Firestore security rules
+   NextGen Storytellers 2.0: Firestore security rules
    ------------------------------------------------------------
    The public site is read-only except for the three things
    visitors are meant to create: a registration, a contact
    message, and a mailing-list subscription.
 
-   Everything the team controls — the schedule, the meeting
-   links and the LIVE switch — needs a signed-in account.
-   Create that account in Firebase console ->
-   Authentication -> Users (Email/Password provider).
+   Everything the team controls: the schedule, the meeting
+   links and the LIVE switch: needs a signed-in account whose
+   email is listed in team() below. People sign in with Google
+   on the admin page; an account not on the list gets nothing.
 
    Deploy with:  firebase deploy --only firestore:rules
    ============================================================ */
@@ -18,12 +18,38 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    /* Only these accounts count as the team. Emails are lower case. */
     function team() {
-      return request.auth != null;
+      return request.auth != null
+          && request.auth.token.email in [
+        'sathini.weerasinghe@aiesec.net',
+        'dulain@aiesec.net',
+        'tharushikarunarathne@aiesec.net',
+        'janukimovintha@aiesec.net',
+        'nst-lb-2627-i@aiesec.net',
+        'mohammedmatheen@aiesec.net',
+        'rasuwankalhara@aiesec.net',
+        'sandivdissanayake@aiesec.net',
+        'yenurivihanga@aiesec.net',
+        'kavishkaaushadi@aiesec.net',
+        'damsith.munasinghe@aiesec.net',
+        'fathimaisthikar@aiesec.net',
+        'yalindee.premaratne@aiesec.net',
+        'shahnaasrafi@aiesec.net',
+        'hasini.nimna@aiesec.net',
+        'achintha.s.gunawardhana@aiesec.net',
+        'akeshchandrasiri@aiesec.net',
+        'dinuka.avinash@aiesec.net'
+      ];
     }
 
     function str(field, max) {
       return field is string && field.size() > 0 && field.size() <= max;
+    }
+
+    /* Visitors may only use their AIESEC address. */
+    function aiesecEmail(field) {
+      return str(field, 200) && field.matches('^[^@ ]+@aiesec[.]net$');
     }
 
     function strOrEmpty(field, max) {
@@ -47,7 +73,7 @@ service cloud.firestore {
        the list back, so attendee details stay private. */
     match /registrations/{regId} {
       allow create: if str(request.resource.data.name, 120)
-                    && str(request.resource.data.email, 200)
+                    && aiesecEmail(request.resource.data.email)
                     && str(request.resource.data.workshopId, 80)
                     && request.resource.data.workshopIds is list
                     && request.resource.data.workshopIds.size() >= 1
@@ -62,7 +88,7 @@ service cloud.firestore {
     /* ---- contact messages ---- */
     match /messages/{msgId} {
       allow create: if str(request.resource.data.name, 120)
-                    && str(request.resource.data.email, 200)
+                    && aiesecEmail(request.resource.data.email)
                     && str(request.resource.data.body, 4000)
                     && request.resource.data.keys().size() <= 10;
       allow read, update, delete: if team();
@@ -70,7 +96,7 @@ service cloud.firestore {
 
     /* ---- mailing list (document id is the email address) ---- */
     match /subscribers/{email} {
-      allow create, update: if str(request.resource.data.email, 200)
+      allow create, update: if aiesecEmail(request.resource.data.email)
                             && request.resource.data.keys().size() <= 4;
       allow read, delete: if team();
     }
