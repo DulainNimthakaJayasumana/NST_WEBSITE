@@ -1,5 +1,5 @@
 /* ============================================================
-   starfield.js — the universe layer
+   starfield.js: the universe layer
    ------------------------------------------------------------
    • parallax star layers that drift with scroll and pointer
    • per-star twinkle
@@ -269,7 +269,7 @@ export function initStarfield(canvas, opts = {}){
 }
 
 /* ---------------------------------------------------------- */
-/*  Warp field — used behind the LIVE takeover                 */
+/*  Warp field: used behind the LIVE takeover                 */
 /* ---------------------------------------------------------- */
 export function initWarp(canvas){
   const ctx = canvas.getContext("2d");

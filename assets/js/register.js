@@ -1,5 +1,5 @@
 /* ============================================================
-   register.js — register.html
+   register.js: register.html
    ============================================================ */
 
 import { SERIES, ENTITY_GROUPS } from "./data.js";
@@ -34,7 +34,7 @@ function renderPickers(){
   const list = open.length ? open : workshops;
 
   if (!list.length){
-    pickersEl.innerHTML = `<div class="empty">${icon("calendar")}<p>Sessions are being scheduled — check back shortly.</p></div>`;
+    pickersEl.innerHTML = `<div class="empty">${icon("calendar")}<p>Sessions are being scheduled. Check back shortly.</p></div>`;
     return;
   }
 
@@ -45,7 +45,7 @@ function renderPickers(){
       : "Date to be confirmed";
     const note = physical
       ? `${when} · ${esc(w.venue || "Venue TBA")}`
-      : `${when} · ${esc(w.platform || "Online")} — link on this site when it starts`;
+      : `${when} · ${esc(w.platform || "Online")} · link on this site when it starts`;
     const checked = (keep.size ? keep.has(w.id) : w.id === preselect) ? "checked" : "";
     return `
       <label class="picker" data-id="${esc(w.id)}" data-type="${esc(w.type)}">
@@ -177,7 +177,7 @@ form.addEventListener("submit", async e => {
   }catch(err){
     console.error(err);
     msg.className = "form__msg form__msg--err is-on";
-    msg.textContent = "We could not save that. Check your connection and try again — " +
+    msg.textContent = "We could not save that. Check your connection and try again, " +
                       "or message us from the contact page and we will add you by hand.";
     submitBtn.disabled = false;
     submitBtn.textContent = "Confirm my place";
@@ -232,7 +232,7 @@ function showPass(rec, chosen){
   if (rec._local || getMode() !== "cloud"){
     done.insertAdjacentHTML("beforeend",
       `<p class="muted" style="text-align:center;margin-top:20px;font-size:.84rem">
-         Saved on this device only — connect Firebase so registrations reach the team.
+         Saved on this device only. Connect Firebase so registrations reach the team.
        </p>`);
   }
 }

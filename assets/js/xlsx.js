@@ -1,5 +1,5 @@
 /* ============================================================
-   xlsx.js — writes a real Excel workbook in the browser
+   xlsx.js: writes a real Excel workbook in the browser
    ------------------------------------------------------------
    An .xlsx is a zip of a few XML files. Nothing here needs compressing,
    so the zip is written in "stored" mode and no library is required.

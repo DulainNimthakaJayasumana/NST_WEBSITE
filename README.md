@@ -1,8 +1,8 @@
-# NextGen Storytellers 2.0 — Workshop Series
+# NextGen Storytellers 2.0: Workshop Series
 
 The website for the workshop series run by the **National Showcasing Team**,
 AIESEC in Sri Lanka. Purple-and-black space theme, live countdown, a
-"HAPPENING NOW — JOIN" takeover for online sessions, and registration for the
+"HAPPENING NOW: JOIN" takeover for online sessions, and registration for the
 physical workshops in Colombo and Kandy.
 
 Plain HTML, CSS and JavaScript modules. No build step, no npm install.
@@ -18,7 +18,7 @@ node serve.js
 Then open <http://localhost:5179>.
 
 You need a server (not `file://`) because the site uses JavaScript modules.
-`serve.js` has no dependencies — it is ~60 lines of Node's own `http` module.
+`serve.js` has no dependencies: it is ~60 lines of Node's own `http` module.
 
 **The site works right now, before you touch Firebase.** It falls back to the
 schedule in `assets/js/data.js` and keeps registrations in the browser, so you
@@ -34,7 +34,7 @@ can show it to the team today and wire the database later.
    your browser.
 
 **Ctrl+C** in that terminal stops the server. You need Node.js installed (`node --version`
-prints a version if you have it). The VS Code *Live Server* extension works too — the
+prints a version if you have it). The VS Code *Live Server* extension works too: the
 site only needs a server, not specifically this one.
 
 ---
@@ -47,7 +47,7 @@ site only needs a server, not specifically this one.
 | `workshops.html` | Every session in full, the two modules, the entity clusters |
 | `register.html` | One form for all four sessions, ends in a printable confirmation pass |
 | `contact.html` | MCVP, the four managers, a message form and the links block |
-| `admin.html` | **The control room** — the live switch, meeting links, dates, registrations, CSV export |
+| `admin.html` | **The control room**: the live switch, meeting links, dates, registrations, CSV export |
 
 All pages share `assets/css/styles.css`. The loading screen is `assets/js/loader.js`; its timings are at the top of that file.
 
@@ -58,22 +58,22 @@ injected into every page, so there is one copy to edit, not five.
 
 ## 3. The bit you will use most: the live switch
 
-Open `admin.html` (there is a quiet **Team** link in the footer).
+Open `yoursite/admin`. It is not linked from any page, so keep the address within the team.
 
 **Mode**
 
-- **Automatic** — a session goes live by the clock, between its start and end
+- **Automatic**: a session goes live by the clock, between its start and end
   time. Set the real times once and forget about it.
-- **Force on** — show the live screen right now, whatever the clock says.
+- **Force on**: show the live screen right now, whatever the clock says.
   Use it when a session starts late, or runs long.
-- **Force off** — never show it. Use it if a session is cancelled.
+- **Force off**: never show it. Use it if a session is cancelled.
 
-**Join link** — paste the Google Meet link. It appears on the live screen, the
+**Join link**: paste the Google Meet link. It appears on the live screen, the
 top bar and the session card. Leave it empty and the button quietly becomes
 "Session details" instead, so nothing ever links to a dead meeting.
 
 **Rehearse it first:** open
-[`index.html?preview=live`](index.html?preview=live) — that forces the live
+[`index.html?preview=live`](index.html?preview=live): that forces the live
 screen on **your browser only** and never touches the database. Add
 `&w=graphics-online` to preview a specific session.
 
@@ -105,7 +105,7 @@ export const firebaseConfig = {
 };
 ```
 
-That is all. Reload the site — the admin page will say *"Connected to
+That is all. Reload the site: the admin page will say *"Connected to
 Firebase"* instead of *"local mode"*.
 
 > These keys are meant to be public. They identify the project, they do not
@@ -152,8 +152,8 @@ firebase deploy --only hosting
 ```
 
 `firebase.json` is already set up: it publishes this folder, strips the dev
-files, and sets sensible cache headers. Any static host works too — Netlify,
-Vercel, GitHub Pages — just upload the folder.
+files, and sets sensible cache headers. Any static host works too: Netlify,
+Vercel, GitHub Pages: just upload the folder.
 
 ---
 
@@ -167,7 +167,7 @@ Vercel, GitHub Pages — just upload the folder.
 | `messages/{auto}` | the contact form | team only |
 | `subscribers/{email}` | the "keep me posted" box | team only |
 
-A `workshops` document only needs the fields you want to **override** — the
+A `workshops` document only needs the fields you want to **override**: the
 rest falls back to `data.js`. So to publish a Google Meet link, one field is enough:
 
 ```
@@ -180,11 +180,11 @@ workshops/graphics-online  →  { joinUrl: "https://meet.google.com/…" }
 
 Everything that is not code is in **`assets/js/data.js`**:
 
-- `SERIES` — name, blurb, **and `contact`, which is still blank**
-- `CLUSTERS` — the entities for each physical day, shown as "AIESEC in …"
-- `WORKSHOPS` — the four sessions
-- `MODULES` — the DXP + Videography blocks
-- `LEAD` / `MANAGERS` — Matheen and the four managers
+- `SERIES`: name, blurb, **and `contact`, which is still blank**
+- `CLUSTERS`: the entities for each physical day, shown as "AIESEC in …"
+- `WORKSHOPS`: the four sessions
+- `MODULES`: the DXP + Videography blocks
+- `LEAD` / `MANAGERS`: Matheen and the four managers
 
 ### Please fill these in
 
@@ -197,7 +197,7 @@ contact: {
 }
 ```
 
-Blank entries are hidden automatically, so nothing broken ever ships — the
+Blank entries are hidden automatically, so nothing broken ever ships: the
 links simply do not appear until you add them.
 
 ---
@@ -239,15 +239,13 @@ light-background clip, remove that line in `styles.css`.
 
 ## 10. The admin page
 
-The **Admin** link in the footer opens `admin.html`: stats, every registered
+`yoursite/admin` opens the admin page: stats, every registered
 person, search and filter, **Export to Excel** (a real .xlsx with sheets for
 registrations, sessions and entities), the live switch and the session editors.
 
 - **Firebase connected:** sign in with Google. This is the real protection, because
   `firestore.rules` only lets the emails listed in `team()` read registrations.
-- **Firebase not connected:** a simple password (`ADMIN_PASSPHRASE` in
-  `firebase-config.js`) opens the page, and it only shows registrations made in that
-  same browser. Anyone can read that password in the source, so it is not security.
+- **Firebase unreachable:** the page says so and stays closed.
 
 ---
 

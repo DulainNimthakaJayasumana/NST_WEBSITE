@@ -1,5 +1,5 @@
 /* ============================================================
-   cards.js — line-up rows, road map and the other home blocks
+   cards.js: line-up rows, road map and the other home blocks
    shared by index.html and workshops.html
    ============================================================ */
 
@@ -25,7 +25,7 @@ export function sessionRow(w, i, { open = false } = {}){
   const n = String(i + 1).padStart(2, "0");
 
   const when = w.dateConfirmed === false && w.dateNote
-    ? w.dateNote.split(" — ")[0].replace(/ 20\d\d$/, "")
+    ? w.dateNote.split(" - ")[0].replace(/ 20\d\d$/, "")
     : `${fmt.short(w.startAt)} · ${fmt.time(w.startAt)}`;
 
   const cta = st === "live" && join
@@ -51,7 +51,7 @@ export function sessionRow(w, i, { open = false } = {}){
         <div class="srow__grid">
           <div>
             <p class="srow__desc">${esc(w.desc || "")}</p>
-            ${w.dateConfirmed === false ? `<p class="srow__note">${esc(w.dateNote || "Provisional date — confirmation coming soon.")}</p>` : ""}
+            ${w.dateConfirmed === false ? `<p class="srow__note">${esc(w.dateNote || "Provisional date. Confirmation coming soon.")}</p>` : ""}
             <div class="btn-row srow__cta">${cta}</div>
           </div>
           <div class="wmeta">

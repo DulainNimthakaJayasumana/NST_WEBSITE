@@ -1,5 +1,5 @@
 /* ============================================================
-   serve.js — zero-dependency local preview server
+   serve.js: zero-dependency local preview server
    ------------------------------------------------------------
    The site uses JavaScript modules, which browsers refuse to load
    from file:// URLs. So open it through a server:
@@ -39,6 +39,7 @@ const TYPES = {
 http.createServer((req, res) => {
   let rel = decodeURIComponent(req.url.split("?")[0]);
   if (rel === "/") rel = "/index.html";
+  if (!path.extname(rel)) rel += ".html";   // same clean addresses as vercel.json
 
   const file = path.join(ROOT, path.normalize(rel).replace(/^([/\\])+/, ""));
   if (!file.startsWith(ROOT)){ res.writeHead(403).end("Forbidden"); return; }
@@ -46,7 +47,7 @@ http.createServer((req, res) => {
   fs.stat(file, (err, st) => {
     if (err || !st.isFile()){
       res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" });
-      res.end('<h1 style="font:600 24px system-ui;padding:40px">404 &mdash; not found</h1>');
+      res.end('<h1 style="font:600 24px system-ui;padding:40px">404: not found</h1>');
       return;
     }
     const headers = {

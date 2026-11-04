@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Admin — NextGen Storytellers 2.0</title>
+<title>Admin | NextGen Storytellers 2.0</title>
+<meta name="robots" content="noindex, nofollow">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#05020e">
 <link rel="icon" href="assets/img/favicon.png">
@@ -22,15 +23,10 @@
     <div class="shell" style="max-width:520px;margin-inline:auto">
       <h1 class="title title--lg" style="margin-bottom:14px">Admin</h1>
       <p class="muted" style="margin-bottom:30px" id="gateLead">
-        Stats, registrations, the live switch and session details.
+        Sign in with your AIESEC Google account to open the control room.
       </p>
       <form class="form" id="gateForm">
-        <div class="field" id="passField">
-          <label for="pass" id="passLabel">Password</label>
-          <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
-          <span class="field__err" id="gateErr">That is not the password.</span>
-        </div>
-        <button class="btn btn--block" type="submit" id="gateBtn">Open</button>
+        <button class="btn btn--block" type="submit" id="gateBtn">Sign in with Google</button>
         <p class="form__msg form__msg--err" id="gateMsg" role="alert"></p>
       </form>
     </div>
@@ -44,7 +40,6 @@
       <p class="muted" id="modeLine" style="margin:10px 0 6px"></p>
       <p class="muted" style="margin:0 0 18px"><span id="signedInAs"></span>
         <button class="btn btn--ghost btn--sm" type="button" id="signOutBtn" hidden>Sign out</button></p>
-      <div id="cfgWarn"></div>
 
       <!-- stats -->
       <div class="kpis" id="kpis"></div>

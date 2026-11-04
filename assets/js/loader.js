@@ -1,5 +1,5 @@
 /* ============================================================
-   loader.js — the loading screen
+   loader.js: the loading screen
    ------------------------------------------------------------
    Deliberately a plain script in <head>, not a module: it has to
    cover the page before anything else paints. Carries its own CSS

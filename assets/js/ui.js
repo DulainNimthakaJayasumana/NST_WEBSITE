@@ -1,5 +1,5 @@
 /* ============================================================
-   ui.js — shared chrome and behaviour for every page
+   ui.js: shared chrome and behaviour for every page
    ------------------------------------------------------------
    mountChrome()   nav + drawer + live bar + takeover + footer
    mountCountdown() ring countdown that rolls into the live screen
@@ -109,7 +109,7 @@ export function nextUpcoming(workshops, now = new Date()){
 }
 
 /* ============================================================
-   LiveWatch — subscribes once, tells everyone else
+   LiveWatch: subscribes once, tells everyone else
    ============================================================ */
 class LiveWatch {
   constructor(){
@@ -353,7 +353,7 @@ function mountSound(){
   sound._audio = audio;
 
   /* A page change tears the player down, so the song's place is noted as it
-     plays and picked up by the next page — plus however long the switch took,
+     plays and picked up by the next page: plus however long the switch took,
      since the song would have kept going. */
   let saved = null;
   try{ saved = JSON.parse(sessionStorage.getItem(SOUND_POS) || "null"); }catch{}
@@ -386,7 +386,7 @@ function mountSound(){
 
   let stored;
   try{ stored = localStorage.getItem(SOUND_KEY); }catch{}
-  // On by default — off only if the visitor has turned it off before.
+  // On by default: off only if the visitor has turned it off before.
   sound._on = stored !== "0";
 
   /* The label says what is actually happening, not just what was asked for:
@@ -414,7 +414,7 @@ function mountSound(){
   if (sound._on){
     // Try straight away. Every browser blocks audio until the visitor has
     // interacted with the page, so if it is refused we start on their very
-    // first click, tap, key or scroll instead — and the toggle shows the
+    // first click, tap, key or scroll instead: and the toggle shows the
     // real state the whole time.
     sound.play();
     const kick = () => {
@@ -461,7 +461,7 @@ function mountFooter(){
           <a href="${esc(c.aiesec || "https://aiesec.lk")}" target="_blank" rel="noopener">
             <img src="assets/img/aiesec-logo-white.png" alt="${esc(SERIES.org)}">
           </a>
-          <p>${esc(SERIES.name)} — the ${esc(SERIES.kicker.toLowerCase())} run by the
+          <p>${esc(SERIES.name)} is the ${esc(SERIES.kicker.toLowerCase())} run by the
              ${esc(SERIES.presenter)} of ${esc(SERIES.org)}, training the next generation of
              storytellers across every entity in the country.</p>
           <div class="footer__org">An initiative of the ${esc(SERIES.presenter)}</div>
@@ -481,8 +481,8 @@ function mountFooter(){
           </div>
           <div class="footer__col">
             <h5>Take part</h5>
-            <a href="register.html">Register — Colombo</a>
-            <a href="register.html">Register — Kandy</a>
+            <a href="register.html">Register for Colombo</a>
+            <a href="register.html">Register for Kandy</a>
             <a href="workshops.html#online">Online sessions</a>
           </div>
           <div class="footer__col">
@@ -495,8 +495,7 @@ function mountFooter(){
       <div class="footer__bottom">
         <span>&copy; ${new Date().getFullYear()} ${esc(SERIES.name)} &middot; ${esc(SERIES.org)}</span>
         <span class="footer__by">Developed by the ${esc(SERIES.presenter)}</span>
-        <span>${esc(SERIES.tagline)} &middot; ${esc(SERIES.term)}
-          &middot; <a class="footer__admin" href="admin.html">Admin</a></span>
+        <span>${esc(SERIES.tagline)} &middot; ${esc(SERIES.term)}</span>
       </div>
     </div>`;
   f.insertAdjacentHTML("beforeend", `<div class="footer__word" aria-hidden="true">${esc(SERIES.tagline)}</div>`);
@@ -589,7 +588,7 @@ function paintTakeover(take, warp, live){
     <p class="takeover__kicker">${esc(SERIES.name)}</p>
     <h2 class="takeover__title">${esc(live.title)}</h2>
     <p class="takeover__sub">${esc(live._message || (online
-        ? "The session has started. Jump in — we will catch you up."
+        ? "The session has started. Jump in and we will catch you up."
         : "The workshop is under way."))}</p>
     <div class="takeover__meta">
       <span>${icon("clock", "")} ${esc(fmt.time(live.startAt))} – ${esc(fmt.time(live.endAt))} ${esc(SERIES.tzLabel)}</span>
@@ -655,7 +654,7 @@ export function mountCountdown(el, getWorkshop){
       el.innerHTML = `<div class="countdown__head"><div class="countdown__what">
         <span class="eyebrow">The series</span>
         <h3>Dates are being locked in</h3>
-        <div class="countdown__meta"><span>Check back shortly — every session lands here first.</span></div>
+        <div class="countdown__meta"><span>Check back shortly. Every session lands here first.</span></div>
       </div></div>`;
       lastId = null;
       return;
@@ -707,7 +706,7 @@ export function mountCountdown(el, getWorkshop){
     }
     if (note){
       note.textContent = w.dateConfirmed === false
-        ? (w.dateNote || "Provisional date — we will confirm here as soon as it is locked.")
+        ? (w.dateNote || "Provisional date. We will confirm here as soon as it is locked.")
         : `All times shown in ${SERIES.tzLabel}.`;
     }
   }
@@ -769,7 +768,7 @@ export function animateNumber(el, to, { dur = 1400, suffix = "" } = {}){
   el.textContent = "0" + suffix;
   requestAnimationFrame(step);
   // If rAF is throttled (background tab, embedded pane) land on the real
-  // number anyway — a stat stuck at "3 entities" is worse than no animation.
+  // number anyway: a stat stuck at "3 entities" is worse than no animation.
   setTimeout(finish, dur + 300);
 }
 

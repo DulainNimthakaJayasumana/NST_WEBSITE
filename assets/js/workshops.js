@@ -1,5 +1,5 @@
 /* ============================================================
-   workshops.js — workshops.html
+   workshops.js: workshops.html
    ============================================================ */
 
 import { MODULES, CLUSTERS } from "./data.js";

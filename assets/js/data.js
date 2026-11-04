@@ -1,5 +1,5 @@
 /* ============================================================
-   data.js — seed content for NextGen Storytellers 2.0
+   data.js: seed content for NextGen Storytellers 2.0
    ------------------------------------------------------------
    Everything here comes from "NST Workshop Series.xlsx".
    Firestore overrides this at runtime (see store.js). If Firebase
@@ -17,11 +17,11 @@ export const SERIES = {
   org:       "AIESEC in Sri Lanka",
   term:      "26.27 · Semester 01",
   tagline:   "Showcase Your Story",
-  blurb:     "A four-week storytelling bootcamp from the National Showcasing Team — " +
+  blurb:     "A four-week storytelling bootcamp from the National Showcasing Team: " +
              "design, edit, shoot and publish. Online masterclasses for everyone, " +
              "then hands-on physical workshops in Colombo and Kandy.",
 
-  /* Season 1 recap — plays inline from the site, no TikTok redirect.
+  /* Season 1 recap: plays inline from the site, no TikTok redirect.
      "#t=1.2" makes the browser use the frame at 1.2s as the still,
      so no separate poster image is needed. */
   recapVideo: "assets/video/recap-nextgen-1.mp4#t=1.2",
@@ -88,7 +88,7 @@ export const WORKSHOPS = [
     facilitators: ["Rasuwan", "Nimna"],
     tools: ["Adobe Photoshop"],
     resources: ["BlueBook", "AIESEC Resources Pack"],
-    desc: "Brand-correct design from the ground up — the BlueBook rules, the AIESEC " +
+    desc: "Brand-correct design from the ground up: the BlueBook rules, the AIESEC " +
           "resources pack, and a live Photoshop build of a real campaign asset.",
     registration: "open-to-all",
     capacity: null
@@ -108,7 +108,7 @@ export const WORKSHOPS = [
     facilitators: ["Januki"],
     tools: ["Adobe Premiere Pro", "Adobe After Effects"],
     resources: [],
-    desc: "Cut a story that holds attention — timeline craft in Premiere Pro, then " +
+    desc: "Cut a story that holds attention: timeline craft in Premiere Pro, then " +
           "motion and titles in After Effects.",
     registration: "open-to-all",
     capacity: null
@@ -129,7 +129,7 @@ export const WORKSHOPS = [
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "A full hands-on day: Digital Experience Platform fundamentals before lunch, " +
-          "then a practical videography block — shoot, direct and review on the spot.",
+          "then a practical videography block: shoot, direct and review on the spot.",
     registration: "register",
     capacity: null,
     entities: CLUSTERS[0].entities,
@@ -150,7 +150,7 @@ export const WORKSHOPS = [
     facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
-    desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster — " +
+    desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster: " +
           "DXP theory in the morning, videography practical through the afternoon.",
     registration: "register",
     capacity: null,
@@ -211,7 +211,7 @@ export const OUTCOMES = [
   {
     icon: "camera",
     title: "Footage worth editing",
-    text: "Hands-on videography — framing, light and direction, practised on the day with real gear."
+    text: "Hands-on videography: framing, light and direction, practised on the day with real gear."
   },
   {
     icon: "rocket",
@@ -234,7 +234,7 @@ const crew = id => names([...WORKSHOPS, ...MODULES].find(x => x.id === id).facil
 export const FAQ = [
   {
     q: "Do I have to attend all four sessions?",
-    a: "No. On the registration form you tick only the sessions you want — one, two, " +
+    a: "No. On the registration form you tick only the sessions you want: one, two, " +
        "three or all four. You can take the online masterclasses and skip the physical " +
        "day, or the other way round."
   },
@@ -247,7 +247,7 @@ export const FAQ = [
   },
   {
     q: "What is the difference between the online and the physical sessions?",
-    a: "The two online masterclasses run live on Google Meet on 10 and 12 November — " +
+    a: "The two online masterclasses run live on Google Meet on 10 and 12 November: " +
        "Graphics Design and Video Editing, two to two and a half hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
@@ -262,7 +262,7 @@ export const FAQ = [
   },
   {
     q: "What do I need to bring?",
-    a: "For the online masterclasses, a laptop with the software installed — Photoshop " +
+    a: "For the online masterclasses, a laptop with the software installed: Photoshop " +
        "for the design session, and Premiere Pro plus After " +
        "Effects for the editing session. For the physical days, bring a laptop and your " +
        "phone. You do not need a camera."

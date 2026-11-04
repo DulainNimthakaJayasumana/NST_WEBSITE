@@ -1,5 +1,5 @@
 /* ============================================================
-   contact.js — contact.html
+   contact.js: contact.html
    ============================================================ */
 
 import { SERIES, LEAD, MANAGERS } from "./data.js";
@@ -96,7 +96,7 @@ form?.addEventListener("submit", async e => {
     msg.className = "form__msg form__msg--ok is-on";
     msg.textContent = (res._local || getMode() !== "cloud")
       ? "Saved on this device. Connect Firebase so messages reach the team inbox."
-      : "Message sent — we usually reply within a day or two.";
+      : "Message sent. We usually reply within a day or two.";
     form.reset();
   }catch(err){
     console.error(err);

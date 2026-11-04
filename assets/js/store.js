@@ -1,14 +1,14 @@
 /* ============================================================
-   store.js — the one place the site talks to data.
+   store.js: the one place the site talks to data.
    ------------------------------------------------------------
    Two modes, same API:
 
-   • CLOUD  — Firebase is configured, so workshops and the live
+   • CLOUD : Firebase is configured, so workshops and the live
               switch stream from Firestore in real time. Flip a
               session live in /admin.html and every open tab
               shows the "HAPPENING NOW" screen within a second.
 
-   • LOCAL  — Firebase is not configured (or the CDN is blocked).
+   • LOCAL : Firebase is not configured (or the CDN is blocked).
               Seed content from data.js is used and registrations
               are kept in localStorage so the site is still fully
               clickable. A banner on the admin page says so.

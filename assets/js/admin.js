@@ -1,11 +1,10 @@
 /* ============================================================
-   admin.js — admin.html (the control room)
+   admin.js: admin.html (the control room)
    ------------------------------------------------------------
-   The passphrase here only hides the UI. Anyone can read this
-   file, so the real protection is firestore.rules — see README.
+   Sign-in only opens the page. Anyone can read this file, so the
+   real protection is firestore.rules. See README.
    ============================================================ */
 
-import { ADMIN_PASSPHRASE, isConfigured } from "./firebase-config.js";
 import { SERIES } from "./data.js";
 import { mountChrome, liveWatch, esc, fmt, statusOf } from "./ui.js";
 import { buildWorkbook } from "./xlsx.js";
@@ -17,17 +16,12 @@ import {
 
 mountChrome({ active: "" });
 
-const GATE_KEY = "nst2:admin";
-
 /* ---------- gate ----------
-   With Firebase connected this is Google sign-in, and firestore.rules decides
-   which accounts get in. Without it, nothing is at stake, so the local
-   passphrase is enough to keep the panel out of the way. */
+   Google sign-in, and firestore.rules decides which accounts get in. */
 const gate   = document.getElementById("gate");
 const panel  = document.getElementById("panel");
 const gForm  = document.getElementById("gateForm");
 const gMsg   = document.getElementById("gateMsg");
-let cloudGate = false;
 
 function gateMessage(text){
   gMsg.textContent = text;
@@ -65,36 +59,17 @@ function openPanel(){
 }
 
 getModeAsync().then(mode => {
-  cloudGate = mode === "cloud";
-  if (cloudGate){
-    document.getElementById("passField").hidden = true;
-    document.getElementById("gateBtn").textContent = "Sign in with Google";
-    document.getElementById("gateLead").textContent =
-      "Sign in with your AIESEC Google account to open the control room.";
+  if (mode === "cloud"){
     onAuth(user => { if (user) admit(user); });
   }else{
-    document.getElementById("gateLead").innerHTML =
-      "Firebase is not connected, so this panel only affects <b>this browser</b>.";
-    if (sessionStorage.getItem(GATE_KEY) === "1") openPanel();
+    gForm.hidden = true;
+    document.getElementById("gateLead").textContent =
+      "Could not reach the database. Check the connection and reload this page.";
   }
 });
 
 gForm.addEventListener("submit", async e => {
   e.preventDefault();
-  const passEl = document.getElementById("pass");
-  const field  = passEl.closest(".field");
-  field.classList.remove("has-err");
-
-  if (!cloudGate){
-    if (passEl.value === ADMIN_PASSPHRASE){
-      sessionStorage.setItem(GATE_KEY, "1");
-      openPanel();
-    }else{
-      field.classList.add("has-err");
-    }
-    return;
-  }
-
   const btn = document.getElementById("gateBtn");
   btn.disabled = true;
   gateMessage("");
@@ -124,23 +99,8 @@ async function boot(){
   if (booted) return;
   booted = true;
 
-  const mode = await getModeAsync();
-  const cloud = mode === "cloud";
-
-  document.getElementById("modeLine").innerHTML = cloud
-    ? `Connected to Firebase project <b>${esc(SERIES.name)}</b> — changes are live for everyone.`
-    : `Running in <b>local mode</b> — changes stay in this browser.`;
-
-  if (!cloud){
-    document.getElementById("cfgWarn").innerHTML = `
-      <p class="cfg-warn">
-        <b>Firebase is not connected yet.</b>
-        ${isConfigured()
-          ? "The config looks filled in but the SDK could not load. Check the network and the project settings."
-          : "Paste your web config into <code>assets/js/firebase-config.js</code>."}
-        Until then you only see registrations made in this browser.
-      </p>`;
-  }
+  document.getElementById("modeLine").innerHTML =
+    `Connected to Firebase project <b>${esc(SERIES.name)}</b>. Changes are live for everyone.`;
 
   liveWatch.onData(w => {
     workshops = w.workshops;
@@ -166,7 +126,7 @@ async function boot(){
 function fillWorkshopSelect(){
   const sel = document.getElementById("liveWorkshop");
   const keep = sel.value;
-  sel.innerHTML = `<option value="">— none —</option>` + workshops.map(w =>
+  sel.innerHTML = `<option value="">None</option>` + workshops.map(w =>
     `<option value="${esc(w.id)}">${esc(w.title)} · ${esc(fmt.short(w.startAt))}</option>`).join("");
   sel.value = keep;
 }
@@ -176,7 +136,7 @@ function hintMode(){
   document.getElementById("modeHint").textContent =
     m === "auto"      ? "The live screen appears between each session's start and end time."
     : m === "force-on"? "The chosen session shows as live right now, whatever the clock says."
-    :                   "No live screen at all — use this if a session is cancelled.";
+    :                   "No live screen at all. Use this if a session is cancelled.";
 }
 document.getElementById("liveMode").addEventListener("change", hintMode);
 
@@ -196,7 +156,7 @@ document.getElementById("saveLive").addEventListener("click", async e => {
     setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 1400);
   }catch(err){
     console.error(err);
-    btn.textContent = "Failed — see console";
+    btn.textContent = "Failed, see console";
     setTimeout(() => { btn.textContent = prev; btn.disabled = false; }, 2200);
   }
 });
@@ -305,7 +265,7 @@ async function saveOne(id, btn){
   try{
     await saveWorkshop(id, patch);
     msg.className = "form__msg form__msg--ok is-on";
-    msg.textContent = "Saved — every open tab has it already.";
+    msg.textContent = "Saved. Every open tab has it already.";
   }catch(err){
     msg.className = "form__msg form__msg--err is-on";
     msg.textContent = err.message || "Could not save.";
@@ -351,7 +311,7 @@ function renderRegs(){
       : `Showing ${list.length} of ${regs.length}.`;
 
   tbody.innerHTML = list.length
-    ? list.map(r => `<tr>${COLS.map(c => `<td>${esc(c.get(r) || "—")}</td>`).join("")}</tr>`).join("")
+    ? list.map(r => `<tr>${COLS.map(c => `<td>${esc(c.get(r) || "-")}</td>`).join("")}</tr>`).join("")
     : `<tr><td colspan="${COLS.length}" class="muted">${regs.length ? "Nobody matches that search." : "Nothing yet. Share the registration link."}</td></tr>`;
   document.getElementById("xlsxBtn").disabled = !list.length;
 }
@@ -468,7 +428,7 @@ async function loadMsgs(){
       <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin-bottom:8px">
         <b>${esc(m.name)}</b>
         <a href="mailto:${esc(m.email)}" style="color:var(--violet-2);font-size:.86rem">${esc(m.email)}</a>
-        <span class="badge">${esc(m.subject || "—")}</span>
+        <span class="badge">${esc(m.subject || "-")}</span>
         <span class="dim" style="font-size:.78rem;margin-left:auto">${esc(m.createdAt ? fmt.date(new Date(m.createdAt)) : "")}</span>
       </div>
       <p class="muted" style="font-size:.9rem;white-space:pre-wrap">${esc(m.body)}</p>
