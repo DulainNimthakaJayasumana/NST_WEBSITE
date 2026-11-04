@@ -184,7 +184,7 @@ export const LEAD = { name: "Matheen", role: "MCVP BnM and NST Head", photo: "as
 
 export const MANAGERS = [
   { name: "Fathima",  role: "Brand Manager",       photo: "assets/img/team-fathima.jpg" },
-  { name: "Dulain",   role: "Showcasing Manager",  photo: "assets/img/team-dulain.jpg" },
+  { name: "Dulain",   role: "Showcasing Manager",  photo: "assets/img/team-dulain.jpg", credit: true },
   { name: "Sathini",  role: "HR Manager",          photo: "assets/img/team-sathini.jpg" },
   { name: "Shahnaas", role: "B2B Manager",         photo: "assets/img/team-shahnaas.jpg" }
 ];

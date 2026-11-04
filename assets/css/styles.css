@@ -426,6 +426,12 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .person__mono{ display:grid; place-items:center; height:100%; font-family:var(--f-display); font-size:clamp(4rem,9vw,9rem); color:var(--violet-2); background:radial-gradient(circle at 50% 30%,rgba(124,58,237,.3),transparent 70%); }
 .person b{ display:block; margin-top:var(--sp-2); font-family:var(--f-display); font-weight:400; text-transform:uppercase; color:var(--star); font-size:clamp(1.5rem,2.6vw,2.5rem); line-height:1.05; }
 .person figcaption span{ color:var(--muted); }
+.person__star{ position:relative; margin-left:2px; padding:0; border:0; background:none; font:inherit; color:var(--violet-2); cursor:pointer; }
+.person__star::after,.footer__star::after{ content:""; position:absolute; inset:-14px; }
+.person__star:hover,.footer__star:hover{ color:var(--lilac); }
+#dulain{ position:relative; z-index:3; }
+.person figcaption{ position:relative; }
+.person figcaption .person__note{ position:absolute; display:block; padding:8px 12px; color:var(--star); font-size:.92rem; font-weight:500; line-height:1.35; background:var(--panel); box-shadow:inset 0 0 0 1px var(--violet-2); }
 .org__note{ margin-top:22px; text-align:center; color:var(--muted-2); font-size:.95rem; }
 .contactgrid{ display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr); gap:clamp(40px,7vw,112px); align-items:start; }
 .contact-links{ border-bottom:1px solid var(--hair); margin-top:var(--sp-4); }
@@ -480,6 +486,7 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .footer__starbar{ display:none; }
 .footer__bottom{ display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px 32px; margin-top:clamp(56px,7vw,104px); color:var(--muted); font-size:.92rem; }
 .footer__by{ color:var(--star); font-weight:500; }
+.footer__star{ position:relative; color:var(--violet-2); }
 .footer__word{ margin:clamp(20px,3vw,36px) 0 -.09em; padding-inline:var(--gut); white-space:nowrap; font-family:var(--f-display); text-transform:uppercase; color:transparent; -webkit-text-stroke:1px var(--muted-2); font-size:min(10.5vw,calc((100vw - 2 * var(--gut)) / 8.9)); line-height:1; text-align:center; }
 
 /* ---------- admin ---------- */

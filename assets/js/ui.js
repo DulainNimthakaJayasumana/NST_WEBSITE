@@ -494,7 +494,7 @@ function mountFooter(){
       <div class="footer__starbar" aria-hidden="true"></div>
       <div class="footer__bottom">
         <span>&copy; ${new Date().getFullYear()} ${esc(SERIES.name)} &middot; ${esc(SERIES.org)}</span>
-        <span class="footer__by">Developed by the ${esc(SERIES.presenter)}</span>
+        <span class="footer__by"><a class="footer__star" href="contact.html#dulain" aria-label="See who this credit belongs to">*</a>Developed by the ${esc(SERIES.presenter)}</span>
         <span>${esc(SERIES.tagline)} &middot; ${esc(SERIES.term)}</span>
       </div>
     </div>`;

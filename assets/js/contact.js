@@ -8,12 +8,16 @@ import { sendMessage, getMode } from "./store.js";
 
 mountChrome({ active: "contact.html" });
 
-const person = (name, role, photo) => `
-  <figure class="person reveal">
+const person = (name, role, photo, credit) => `
+  <figure class="person reveal"${credit ? ' id="dulain"' : ""}>
     <div class="person__img">${photo
       ? `<img src="${esc(photo)}" alt="${esc(name)}, ${esc(role)}" loading="lazy">`
       : `<div class="person__mono" aria-hidden="true">${esc(initials(name))}</div>`}</div>
-    <figcaption><b>${esc(name)}</b><span>${esc(role)}</span></figcaption>
+    <figcaption><b>${esc(name)}${credit
+      ? `<button class="person__star" id="creditStar" type="button" aria-expanded="false" aria-controls="creditNote" aria-label="Show credit">*</button>`
+      : ""}</b>${credit
+      ? `<span class="person__note" id="creditNote" hidden>*Developed by the ${esc(SERIES.presenter)}</span>`
+      : ""}<span>${esc(role)}</span></figcaption>
   </figure>`;
 
 /* ---------- tier 1: MCVP ---------- */
@@ -26,8 +30,51 @@ if (lead){
 /* ---------- tier 2: managers ---------- */
 const mgr = document.getElementById("orgManagers");
 if (mgr){
-  mgr.innerHTML = MANAGERS.map(m => person(m.name, m.role, m.photo)).join("");
+  mgr.innerHTML = MANAGERS.map(m => person(m.name, m.role, m.photo, m.credit)).join("");
   initReveal(mgr);
+}
+
+/* ---------- the credit: the asterisk beside the name, or the one in the footer ---------- */
+const star = document.getElementById("creditStar");
+const note = document.getElementById("creditNote");
+if (star && note){
+  /* Sits beside the name, on whichever side has room, and never moves the card's text. */
+  const placeCredit = () => {
+    const box = note.parentElement.getBoundingClientRect();
+    const name = star.parentElement.getBoundingClientRect();
+    const s = star.getBoundingClientRect();
+    const edge = 16, gap = 10, W = document.documentElement.clientWidth;
+    const right = W - edge - (s.right + gap), left = name.left - gap - edge;
+    const toRight = right >= 300 || right >= left;
+    const width = Math.min(340, toRight ? right : left);
+    note.style.width = "max-content";
+    note.style.maxWidth = width + "px";
+    const w = note.offsetWidth;
+    note.style.left = (toRight ? s.right + gap : name.left - gap - w) - box.left + "px";
+    note.style.top = name.top - box.top + name.height / 2 - note.offsetHeight / 2 + "px";
+  };
+  const setCredit = open => {
+    note.hidden = !open;
+    star.setAttribute("aria-expanded", String(open));
+    if (open) placeCredit();
+  };
+  const showCredit = () => {
+    setCredit(true);
+    document.getElementById("dulain").scrollIntoView({ block: "center" });
+  };
+  document.addEventListener("click", e => {
+    if (e.target.closest(".footer__star")){
+      e.preventDefault();
+      showCredit();
+    } else if (e.target === star){
+      setCredit(note.hidden);
+    } else if (!note.contains(e.target)){
+      setCredit(false);
+    }
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") setCredit(false); });
+  window.addEventListener("resize", () => { if (!note.hidden) placeCredit(); }, { passive: true });
+  if (location.hash === "#dulain") showCredit();
 }
 
 /* ---------- links ---------- */
