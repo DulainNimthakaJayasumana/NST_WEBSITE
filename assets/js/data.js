@@ -34,7 +34,7 @@ export const SERIES = {
     facebook:  "",
     linkedin:  "",
     phone:     "",                      // e.g. "+94 70 150 6924"
-    tiktok:    "https://vt.tiktok.com/ZSg3ptMbv/",
+    tiktok:    "https://www.tiktok.com/@asl.marketers",
     aiesec:    "https://aiesec.lk"
   },
 
