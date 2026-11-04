@@ -79,8 +79,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Design",
-    startAt: "2026-11-10T19:00:00+05:30",
-    endAt:   "2026-11-10T21:30:00+05:30",
+    startAt: "2026-11-14T19:00:00+05:30",
+    endAt:   "2026-11-14T21:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "2h 30min",
     platform: "Google Meet",
@@ -99,8 +99,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Video",
-    startAt: "2026-11-12T19:00:00+05:30",
-    endAt:   "2026-11-12T21:00:00+05:30",
+    startAt: "2026-11-07T19:00:00+05:30",
+    endAt:   "2026-11-07T21:00:00+05:30",
     dateConfirmed: true,
     durationLabel: "2h",
     platform: "Google Meet",
@@ -247,8 +247,8 @@ export const FAQ = [
   },
   {
     q: "What is the difference between the online and the physical sessions?",
-    a: "The two online masterclasses run live on Google Meet on 10 and 12 November: " +
-       "Graphics Design and Video Editing, two to two and a half hours each. The " +
+    a: "The two online masterclasses run live on Google Meet on 7 and 14 November: " +
+       "Video Editing and Graphics Design, two to two and a half hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
        "DXP and hands-on videography."
@@ -289,8 +289,8 @@ export const FAQ = [
   },
   {
     q: "Who is teaching?",
-    a: "Each session card names its facilitators. Graphics Design is " +
-       crew("graphics-online") + "; Video Editing is " + crew("video-editing-online") +
+    a: "Each session card names its facilitators. Video Editing is " +
+       crew("video-editing-online") + "; Graphics Design is " + crew("graphics-online") +
        ". On the physical days, DXP and videography are both led by " + crew("dxp") + "."
   }
 ];

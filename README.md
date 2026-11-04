@@ -209,8 +209,8 @@ untick **Date is confirmed**, the site shows a "date to be confirmed" note.
 
 | Session | Date |
 |---|---|
-| Graphics Design Masterclass | Tue 10 Nov, 19:00–21:30 |
-| Video Editing Masterclass | Thu 12 Nov, 19:00–21:00 |
+| Video Editing Masterclass | Sat 7 Nov, 19:00–21:00 |
+| Graphics Design Masterclass | Sat 14 Nov, 19:00–21:30 |
 | Physical · Colombo | Sat 21 Nov, 10:00–17:30 |
 | Physical · Kandy | Sat 28 Nov, 10:00–17:30 |
 
