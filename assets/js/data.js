@@ -17,9 +17,9 @@ export const SERIES = {
   org:       "AIESEC in Sri Lanka",
   term:      "26.27 · Semester 01",
   tagline:   "Showcase Your Story",
-  blurb:     "A four-week storytelling bootcamp from the National Showcasing Team: " +
-             "design, edit, shoot and publish. Online masterclasses for everyone, " +
-             "then hands-on physical workshops in Colombo and Kandy.",
+  blurb:     "A storytelling bootcamp from the National Showcasing Team: " +
+             "design, edit, shoot and publish. Online sessions for everyone, " +
+             "and hands-on physical workshops in Colombo and Kandy.",
 
   /* Season 1 recap: plays inline from the site, no TikTok redirect.
      "#t=1.2" makes the browser use the frame at 1.2s as the still,
@@ -49,14 +49,14 @@ const aiesecIn = list => list.map(n => `AIESEC in ${n}`);
 
 export const CLUSTERS = [
   {
-    id: "colombo", city: "Colombo", dateLabel: "Saturday 21 November",
+    id: "colombo", city: "Colombo", dateLabel: "Saturday 28 November",
     entities: aiesecIn([
       "Colombo North", "Colombo South", "Colombo Central", "USJ", "Ruhuna",
       "SLIIT", "IIT", "Saegis", "NIBM", "NSBM", "KDU", "SLTC", "Horizon Campus"
     ])
   },
   {
-    id: "kandy", city: "Kandy", dateLabel: "Saturday 28 November",
+    id: "kandy", city: "Kandy", dateLabel: "Saturday 5 December",
     entities: aiesecIn([
       "EUSL", "SLIIT Kandy", "Vavuniya", "Jaffna", "Wayamba", "Rajarata", "Kandy"
     ])
@@ -79,8 +79,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Design",
-    startAt: "2026-11-14T19:00:00+05:30",
-    endAt:   "2026-11-14T21:30:00+05:30",
+    startAt: "2026-11-21T19:00:00+05:30",
+    endAt:   "2026-11-21T21:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "2h 30min",
     platform: "Google Meet",
@@ -99,8 +99,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Video",
-    startAt: "2026-11-07T19:00:00+05:30",
-    endAt:   "2026-11-07T21:00:00+05:30",
+    startAt: "2026-11-14T19:00:00+05:30",
+    endAt:   "2026-11-14T21:00:00+05:30",
     dateConfirmed: true,
     durationLabel: "2h",
     platform: "Google Meet",
@@ -114,13 +114,51 @@ export const WORKSHOPS = [
     capacity: null
   },
   {
+    id: "podcast-online",
+    title: "Podcast Workshop",
+    type: "online",
+    phase: "online",
+    track: "Podcast",
+    startAt: "2026-12-12T19:00:00+05:30",
+    endAt:   "2026-12-12T21:00:00+05:30",
+    dateConfirmed: true,
+    durationLabel: "2h",
+    platform: "Google Meet",
+    joinUrl: "",
+    facilitators: ["Yalindee"],
+    tools: [],
+    resources: [],
+    desc: "A live online workshop on podcasting, led by Yalindee.",
+    registration: "open-to-all",
+    capacity: null
+  },
+  {
+    id: "content-writing-online",
+    title: "Content Writing Workshop",
+    type: "online",
+    phase: "online",
+    track: "Content Writing",
+    startAt: "2026-12-21T19:00:00+05:30",
+    endAt:   "2026-12-21T21:00:00+05:30",
+    dateConfirmed: true,
+    durationLabel: "2h",
+    platform: "Google Meet",
+    joinUrl: "",
+    facilitators: ["Yeniri"],
+    tools: [],
+    resources: [],
+    desc: "A live online workshop on content writing, led by Yeniri.",
+    registration: "open-to-all",
+    capacity: null
+  },
+  {
     id: "colombo-physical",
     title: "Physical Workshop · Colombo",
     type: "physical",
     phase: "colombo",
     track: "DXP + Videography",
-    startAt: "2026-11-21T10:00:00+05:30",
-    endAt:   "2026-11-21T17:30:00+05:30",
+    startAt: "2026-11-28T10:00:00+05:30",
+    endAt:   "2026-11-28T17:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Sri Jayewardenepura",
@@ -141,8 +179,8 @@ export const WORKSHOPS = [
     type: "physical",
     phase: "kandy",
     track: "DXP + Videography",
-    startAt: "2026-11-28T10:00:00+05:30",
-    endAt:   "2026-11-28T17:30:00+05:30",
+    startAt: "2026-12-05T10:00:00+05:30",
+    endAt:   "2026-12-05T17:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Peradeniya",
@@ -233,10 +271,10 @@ const crew = id => names([...WORKSHOPS, ...MODULES].find(x => x.id === id).facil
 
 export const FAQ = [
   {
-    q: "Do I have to attend all four sessions?",
-    a: "No. On the registration form you tick only the sessions you want: one, two, " +
-       "three or all four. You can take the online masterclasses and skip the physical " +
-       "day, or the other way round."
+    q: "Do I have to attend all six sessions?",
+    a: "No. On the registration form you tick only the sessions you want, from one " +
+       "up to all six. You can take the online sessions and skip the physical " +
+       "days, or the other way round."
   },
   {
     q: "How do I register?",
@@ -247,8 +285,9 @@ export const FAQ = [
   },
   {
     q: "What is the difference between the online and the physical sessions?",
-    a: "The two online masterclasses run live on Google Meet on 7 and 14 November: " +
-       "Video Editing and Graphics Design, two to two and a half hours each. The " +
+    a: "The four online sessions run live on Google Meet: Video Editing on 14 " +
+       "November, Graphics Design on 21 November, a Podcast workshop on 12 December " +
+       "and Content Writing on 21 December, two to two and a half hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
        "DXP and hands-on videography."
@@ -291,6 +330,7 @@ export const FAQ = [
     q: "Who is teaching?",
     a: "Each session card names its facilitators. Video Editing is " +
        crew("video-editing-online") + "; Graphics Design is " + crew("graphics-online") +
+       "; the Podcast workshop is " + crew("podcast-online") + "; Content Writing is " + crew("content-writing-online") +
        ". On the physical days, DXP and videography are both led by " + crew("dxp") + "."
   }
 ];

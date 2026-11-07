@@ -45,7 +45,7 @@ site only needs a server, not specifically this one.
 |---|---|
 | `index.html` | Hero with the animated logo, live countdown, series roadmap, sessions, season-1 recap video |
 | `workshops.html` | Every session in full, the two modules, the entity clusters |
-| `register.html` | One form for all four sessions, ends in a printable confirmation pass |
+| `register.html` | One form for all six sessions, ends in a printable confirmation pass |
 | `contact.html` | MCVP, the four managers, a message form and the links block |
 | `admin.html` | **The control room**: the live switch, meeting links, dates, registrations, CSV export |
 
@@ -182,7 +182,7 @@ Everything that is not code is in **`assets/js/data.js`**:
 
 - `SERIES`: name, blurb, **and `contact`, which is still blank**
 - `CLUSTERS`: the entities for each physical day, shown as "AIESEC in …"
-- `WORKSHOPS`: the four sessions
+- `WORKSHOPS`: the six sessions
 - `MODULES`: the DXP + Videography blocks
 - `LEAD` / `MANAGERS`: Matheen and the four managers
 
@@ -204,15 +204,17 @@ links simply do not appear until you add them.
 
 ## 8. Dates
 
-All four dates are confirmed. To change one, edit it in the admin page. If you
+All six dates are confirmed. To change one, edit it in the admin page. If you
 untick **Date is confirmed**, the site shows a "date to be confirmed" note.
 
 | Session | Date |
 |---|---|
-| Video Editing Masterclass | Sat 7 Nov, 19:00–21:00 |
-| Graphics Design Masterclass | Sat 14 Nov, 19:00–21:30 |
-| Physical · Colombo | Sat 21 Nov, 10:00–17:30 |
-| Physical · Kandy | Sat 28 Nov, 10:00–17:30 |
+| Video Editing Masterclass | Sat 14 Nov, 19:00–21:00 |
+| Graphics Design Masterclass | Sat 21 Nov, 19:00–21:30 |
+| Physical · Colombo | Sat 28 Nov, 10:00–17:30 |
+| Physical · Kandy | Sat 5 Dec, 10:00–17:30 |
+| Podcast Workshop (online) | Sat 12 Dec, 19:00–21:00 |
+| Content Writing Workshop (online) | Mon 21 Dec, 19:00–21:00 |
 
 All times are Asia/Colombo and are rendered in Sri Lanka time for every
 visitor, wherever they are.
