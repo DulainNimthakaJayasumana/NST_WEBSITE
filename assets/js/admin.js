@@ -11,6 +11,7 @@ import { buildWorkbook } from "./xlsx.js";
 import {
   getModeAsync, setLiveSettings, saveWorkshop,
   listRegistrations, listMessages, onLiveSettings,
+  removeRegistration, removeMessage,
   signInWithGoogle, hasTeamAccess, signOutTeam, onAuth
 } from "./store.js";
 
@@ -311,8 +312,9 @@ function renderRegs(){
       : `Showing ${list.length} of ${regs.length}.`;
 
   tbody.innerHTML = list.length
-    ? list.map(r => `<tr>${COLS.map(c => `<td>${esc(c.get(r) || "-")}</td>`).join("")}</tr>`).join("")
-    : `<tr><td colspan="${COLS.length}" class="muted">${regs.length ? "Nobody matches that search." : "Nothing yet. Share the registration link."}</td></tr>`;
+    ? list.map(r => `<tr>${COLS.map(c => `<td>${esc(c.get(r) || "-")}</td>`).join("")}
+        <td class="rowdel-cell"><button class="rowdel" type="button" data-reg="${regs.indexOf(r)}" aria-label="Remove ${esc(r.name || "this registration")}">Remove</button></td></tr>`).join("")
+    : `<tr><td colspan="${COLS.length + 1}" class="muted">${regs.length ? "Nobody matches that search." : "Nothing yet. Share the registration link."}</td></tr>`;
   document.getElementById("xlsxBtn").disabled = !list.length;
 }
 
@@ -326,12 +328,12 @@ function fillRegFilter(){
 
 async function loadRegs(){
   const tbody = document.querySelector("#regTable tbody");
-  document.querySelector("#regTable thead tr").innerHTML = COLS.map(c => `<th>${esc(c.title)}</th>`).join("");
+  document.querySelector("#regTable thead tr").innerHTML = COLS.map(c => `<th>${esc(c.title)}</th>`).join("") + `<th><span class="sr-only">Remove</span></th>`;
   try{
     regs = await listRegistrations();
   }catch(err){
     console.error(err);
-    tbody.innerHTML = `<tr><td colspan="${COLS.length}" class="muted">Could not load registrations.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${COLS.length + 1}" class="muted">Could not load registrations.</td></tr>`;
     return;
   }
   renderRegs();
@@ -362,6 +364,29 @@ async function syncSeatCounts(){
 }
 
 document.getElementById("refreshBtn")?.addEventListener("click", loadRegs);
+
+/* Remove one registration, after a confirm. Seat counts and stats follow. */
+document.querySelector("#regTable tbody")?.addEventListener("click", async e => {
+  const btn = e.target.closest(".rowdel");
+  if (!btn) return;
+  const r = regs[+btn.dataset.reg];
+  if (!r) return;
+  if (!confirm(`Remove ${r.name || "this person"}'s registration${r.ref ? ` (${r.ref})` : ""}? This cannot be undone.`)) return;
+  btn.disabled = true;
+  btn.textContent = "Removing…";
+  try{
+    await removeRegistration(r);
+    regs = regs.filter(x => x !== r);
+    renderRegs();
+    renderStats();
+    syncSeatCounts();
+  }catch(err){
+    console.error(err);
+    btn.disabled = false;
+    btn.textContent = "Remove";
+    alert("Could not remove that registration. Check you are signed in with a team account.");
+  }
+});
 
 /* ---------- Excel export ---------- */
 function tally(list, key){
@@ -423,14 +448,34 @@ async function loadMsgs(){
   document.getElementById("msgCount").textContent =
     msgs.length ? `${msgs.length} message${msgs.length === 1 ? "" : "s"}.` : "No messages yet.";
 
-  host.innerHTML = msgs.length ? msgs.map(m => `
+  host.innerHTML = msgs.length ? msgs.map((m, i) => `
     <div class="msgrow">
       <div style="display:flex;flex-wrap:wrap;gap:8px 14px;align-items:baseline;margin-bottom:8px">
         <b>${esc(m.name)}</b>
         <a href="mailto:${esc(m.email)}" style="color:var(--violet-2);font-size:.86rem">${esc(m.email)}</a>
         <span class="badge">${esc(m.subject || "-")}</span>
         <span class="dim" style="font-size:.78rem;margin-left:auto">${esc(m.createdAt ? fmt.date(new Date(m.createdAt)) : "")}</span>
+        <button class="rowdel" type="button" data-msg="${i}" aria-label="Remove the message from ${esc(m.name || "this sender")}">Remove</button>
       </div>
       <p class="muted" style="font-size:.9rem;white-space:pre-wrap">${esc(m.body)}</p>
     </div>`).join("") : "";
+
+  /* Remove one message, after a confirm. */
+  host.onclick = async e => {
+    const btn = e.target.closest(".rowdel");
+    const m = btn && msgs[+btn.dataset.msg];
+    if (!m) return;
+    if (!confirm(`Remove the message from ${m.name || "this sender"}? This cannot be undone.`)) return;
+    btn.disabled = true;
+    btn.textContent = "Removing…";
+    try{
+      await removeMessage(m);
+      loadMsgs();
+    }catch(err){
+      console.error(err);
+      btn.disabled = false;
+      btn.textContent = "Remove";
+      alert("Could not remove that message. Check you are signed in with a team account.");
+    }
+  };
 }

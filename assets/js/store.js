@@ -332,6 +332,27 @@ export async function listMessages(){
   return snap.docs.map(d => ({ id: d.id, ...d.data(), createdAt: toDate(d.data().createdAt) }));
 }
 
+/* ---------- removing rows (team only: firestore.rules allows delete for team()) ---------- */
+export async function removeRegistration(r){
+  await ready();
+  if (mode !== "cloud"){
+    lsWrite(LS_REGS, lsRead(LS_REGS).filter(x => !(x.ref === r.ref && x.createdAt === r.createdAt)));
+    return;
+  }
+  const { doc, deleteDoc } = fb.api;
+  await deleteDoc(doc(fb.db, PATHS.registrations, r.id));
+}
+
+export async function removeMessage(m){
+  await ready();
+  if (mode !== "cloud"){
+    lsWrite(LS_MSGS, lsRead(LS_MSGS).filter(x => !(x.email === m.email && x.createdAt === m.createdAt)));
+    return;
+  }
+  const { doc, deleteDoc } = fb.api;
+  await deleteDoc(doc(fb.db, PATHS.messages, m.id));
+}
+
 /* ---------- localStorage helpers ---------- */
 function lsRead(key){
   try{ return JSON.parse(localStorage.getItem(key) || "[]"); }catch{ return []; }
