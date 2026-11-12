@@ -134,6 +134,30 @@
             </span>
           </button>
           <span class="recap__tag">NextGen Storytellers 1.0 recap</span>
+
+          <!-- custom player controls (filled in by home.js) -->
+          <div class="vp" id="recapControls" hidden>
+            <div class="vp__row">
+              <span class="vp__time" id="vpCur">0:00</span>
+              <div class="vp__slider vp__slider--seek" id="vpSeek" role="slider" tabindex="0"
+                   aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+              <span class="vp__time" id="vpDur">0:00</span>
+            </div>
+            <div class="vp__row vp__row--btns">
+              <div class="vp__grp">
+                <button class="vp__btn" id="vpPlay" type="button" aria-label="Pause"></button>
+                <button class="vp__btn" id="vpMute" type="button" aria-label="Mute"></button>
+                <div class="vp__slider vp__slider--vol" id="vpVol" role="slider" tabindex="0"
+                     aria-label="Volume" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><i></i></div>
+              </div>
+              <div class="vp__grp vp__speeds" id="vpSpeeds" role="group" aria-label="Playback speed">
+                <button class="vp__btn vp__spd" type="button" data-speed="0.5">0.5x</button>
+                <button class="vp__btn vp__spd is-on" type="button" data-speed="1">1x</button>
+                <button class="vp__btn vp__spd" type="button" data-speed="1.5">1.5x</button>
+                <button class="vp__btn vp__spd" type="button" data-speed="2">2x</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

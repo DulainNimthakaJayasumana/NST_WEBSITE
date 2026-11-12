@@ -296,6 +296,41 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .recap__btn svg{ width:30px; height:30px; margin-left:4px; fill:var(--void); }
 .recap__tag{ position:absolute; left:16px; right:16px; bottom:14px; color:#fff; font-weight:500; pointer-events:none; transition:opacity .4s; }
 .recap__visual.is-playing .recap__play,.recap__visual.is-playing .recap__tag{ opacity:0; pointer-events:none; }
+.recap__visual.is-playing video{ cursor:pointer; }
+
+/* recap player: glass control bar that rises in on hover, while paused, or after a tap */
+.vp{
+  position:absolute; left:8px; right:8px; bottom:8px; z-index:2; display:grid; gap:8px; padding:12px 14px;
+  border-radius:16px; background:rgba(17,17,17,.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
+  color:#fff; opacity:0; transform:translateY(20px); filter:blur(10px); pointer-events:none;
+  transition:opacity .45s var(--ease-out), transform .6s cubic-bezier(.34,1.4,.64,1), filter .45s var(--ease-out);
+}
+.vp[hidden]{ display:none; }
+.recap__visual.show-ctl .vp,.recap__visual.is-paused .vp{ opacity:1; transform:none; filter:none; pointer-events:auto; }
+.vp__row{ display:flex; align-items:center; gap:10px; }
+.vp__row--btns{ justify-content:space-between; gap:6px; }
+.vp__grp{ display:flex; align-items:center; gap:4px; }
+.vp__time{ font-size:.8rem; font-variant-numeric:tabular-nums; min-width:2.6em; }
+.vp__time:last-child{ text-align:right; }
+.vp__slider{ position:relative; height:4px; border-radius:99px; background:rgba(255,255,255,.2); cursor:pointer; touch-action:none; }
+.vp__slider::before{ content:""; position:absolute; inset:-9px 0; }   /* bigger hit area */
+.vp__slider i{ position:absolute; left:0; top:0; bottom:0; width:0; border-radius:inherit; background:#fff; transition:width .3s var(--ease-out); }
+.vp__slider.is-drag i{ transition:none; }
+.vp__slider:focus-visible{ outline:2px solid var(--violet-2); outline-offset:6px; }
+.vp__slider--seek{ flex:1; }
+.vp__slider--vol{ width:64px; margin-left:4px; }
+.vp__btn{
+  display:grid; place-items:center; min-width:36px; height:36px; padding:0 6px; border:0; border-radius:8px;
+  background:none; color:#fff; font:inherit; font-size:.78rem; font-weight:600; cursor:pointer;
+  transition:background .2s, transform .2s var(--ease-out);
+}
+.vp__btn:hover,.vp__spd.is-on{ background:rgba(17,17,17,.82); }
+.vp__btn:hover{ transform:scale(1.1); }
+.vp__btn:active{ transform:scale(.9); }
+.vp__btn:focus-visible{ outline:2px solid var(--violet-2); outline-offset:1px; }
+.vp__btn svg{ width:20px; height:20px; }
+.vp__spd{ min-width:0; padding:0 7px; }
+@media (hover:none){ .vp__slider--vol{ display:none; } }   /* phones set volume with their own keys */
 
 /* ---------- FAQ ---------- */
 .faqwrap{ display:grid; grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr); gap:clamp(28px,5vw,80px); align-items:start; }
@@ -442,19 +477,50 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .clink__txt b{ display:block; font-weight:600; color:var(--star); }
 .clink__txt span{ font-size:.95rem; color:var(--muted); }
 
-/* ---------- sound: on the right edge, no box ---------- */
+/* ---------- sound: a record in the bottom-right corner ---------- */
 .sound{
-  position:fixed; right:6px; top:50%; z-index:115; transform:translateY(-50%); display:flex; align-items:center; gap:10px;
-  writing-mode:vertical-rl; padding:12px 8px; background:none; border:0; cursor:pointer;
-  color:var(--muted); font-size:.85rem; font-weight:500; transition:color .3s;
+  position:fixed; right:20px; bottom:20px; z-index:115; display:flex; align-items:center; gap:10px;
+  padding:0; background:none; border:0; cursor:pointer; color:var(--star); font:inherit;
+  animation:sound-pop .7s cubic-bezier(.34,1.56,.64,1) .8s both;
 }
-.sound:hover,.sound.is-on{ color:var(--star); }
-.sound__bars{ display:flex; flex-direction:row; align-items:flex-end; gap:2px; width:13px; height:13px; writing-mode:horizontal-tb; }
-.sound__bars i{ width:2px; height:4px; background:currentColor; }
-.sound.is-on .sound__bars i{ background:var(--violet-2); animation:eq .95s ease-in-out infinite; }
-.sound.is-on .sound__bars i:nth-child(2){ animation-delay:.16s; }
-.sound.is-on .sound__bars i:nth-child(3){ animation-delay:.32s; }
-@keyframes eq{ 0%,100%{ height:4px; } 50%{ height:13px; } }
+@keyframes sound-pop{ from{ opacity:0; transform:translateY(24px) scale(.6); } }
+.sound:focus-visible{ outline:none; }
+.sound:focus-visible .sound__disc{ outline:2px solid var(--violet-2); outline-offset:3px; }
+/* the record: hairline grooves on the site's void, a violet sheen so the turn is visible,
+   spinning only while the music plays (pausing keeps the angle, so it stops dead) */
+.sound__disc{
+  display:grid; place-items:center; width:52px; height:52px; border-radius:50%;
+  background:
+    conic-gradient(from 20deg, transparent 0 30deg, rgba(168,85,247,.32) 55deg, transparent 85deg 210deg, rgba(196,181,253,.16) 235deg, transparent 265deg),
+    repeating-radial-gradient(circle, var(--hair-2) 0 1px, transparent 1px 3.5px),
+    var(--void-2);
+  box-shadow:inset 0 0 0 1px var(--hair), 0 10px 30px rgba(0,0,0,.45);
+  animation:sound-spin 3s linear infinite; animation-play-state:paused;
+  transition:transform .35s var(--ease-out), box-shadow .35s;
+}
+.sound.is-on .sound__disc{
+  animation-play-state:running;
+  box-shadow:inset 0 0 0 1px rgba(168,85,247,.5), 0 0 26px rgba(124,58,237,.45), 0 10px 30px rgba(0,0,0,.45);
+}
+.sound:hover .sound__disc{ scale:1.07; }
+.sound:active .sound__disc{ scale:.93; }
+@keyframes sound-spin{ to{ transform:rotate(360deg); } }
+/* centre label in the brand violet, with the spindle hole */
+.sound__label{
+  width:18px; height:18px; border-radius:50%;
+  background:radial-gradient(circle, var(--void) 0 2px, transparent 2.5px), linear-gradient(135deg, var(--violet-2), var(--violet));
+  box-shadow:0 0 0 3px rgba(5,2,14,.6);
+}
+/* "Sound on" / "Sound off", only while hovering */
+.sound__lbl{
+  padding:7px 12px; border-radius:99px; font-size:.82rem; font-weight:500; white-space:nowrap;
+  background:rgba(10,5,25,.82); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:inset 0 0 0 1px var(--hair);
+  opacity:0; transform:translateX(10px) scale(.92); transform-origin:right center; pointer-events:none;
+  transition:opacity .3s, transform .4s var(--ease-out);
+}
+.sound:hover .sound__lbl,.sound:focus-visible .sound__lbl{ opacity:1; transform:none; }
+.footer{ padding-bottom:96px; }   /* the disc never covers the last line */
+@media (prefers-reduced-motion:reduce){ .sound,.sound__disc{ animation:none; } }
 
 /* ---------- cursor ---------- */
 .cursor{
@@ -561,16 +627,12 @@ table.data tbody tr:hover td.rowdel-cell{ background:#150b2c; }
   .org__row{ grid-template-columns:1fr 1fr; }
   .org__row--one{ grid-template-columns:calc((100% - var(--g)) / 2); }
 
-  /* The sound control moves out of the text column into the corner. */
-  .sound{
-    right:16px; top:auto; bottom:16px; transform:none; writing-mode:horizontal-tb; justify-content:center;
-    width:44px; height:44px; padding:0; border-radius:50%;
-    background:rgba(5,2,14,.78); box-shadow:inset 0 0 0 1px var(--hair); backdrop-filter:blur(10px);
-  }
-  .sound__lbl{ display:none; }
+  /* smaller record on phones */
+  .sound{ right:14px; bottom:14px; }
+  .sound__disc{ width:48px; height:48px; }
   /* room for it where the page ends in text */
   .hero__facts{ padding-bottom:72px; }
-  .footer{ padding-bottom:72px; }
+  .footer{ padding-bottom:80px; }
 }
 @media (max-width:620px){
   body{ font-size:16px; }

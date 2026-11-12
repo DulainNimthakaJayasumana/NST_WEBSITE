@@ -447,8 +447,10 @@ function mountSound(){
   btn.className = "sound";
   btn.id = "soundBtn";
   btn.type = "button";
-  btn.innerHTML = `<span class="sound__bars" aria-hidden="true"><i></i><i></i><i></i></span>
-                   <span class="sound__lbl">Sound</span>`;
+  /* A record in the bottom-right corner: it spins while the theme plays and
+     stops dead where it is when it doesn't. The pill beside it says the state. */
+  btn.innerHTML = `<span class="sound__lbl">Sound</span>
+                   <span class="sound__disc" aria-hidden="true"><span class="sound__label"></span></span>`;
   document.body.appendChild(btn);
   sound._btn = btn;
 
@@ -462,13 +464,10 @@ function mountSound(){
   function sync(){
     const playing = sound._on && !audio.paused;
     btn.classList.toggle("is-on", playing);
+    btn.title = sound._on ? "Turn the music off" : "Turn the music on";
     btn.setAttribute("aria-pressed", String(sound._on));
     btn.setAttribute("aria-label", sound._on ? "Turn the music off" : "Turn the music on");
-    btn.querySelector(".sound__lbl").textContent =
-      !sound._on        ? "Sound off"
-      : playing         ? "Sound on"
-      : sound._duckedBy ? "Paused"
-      :                   "Tap for sound";
+    btn.querySelector(".sound__lbl").textContent = playing ? "Sound on" : "Sound off";
   }
 
   btn.addEventListener("click", () => {
@@ -493,7 +492,6 @@ function mountSound(){
     ["pointerdown", "keydown", "wheel", "touchstart"].forEach(e =>
       document.addEventListener(e, kick, { once: true, passive: true }));
 
-    if (stored === null) btn.classList.add("is-hint");   // first visit: a nudge
   }
 
   audio.addEventListener("play",  sync);
