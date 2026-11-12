@@ -2,7 +2,7 @@
    workshops.js: workshops.html
    ============================================================ */
 
-import { MODULES, CLUSTERS } from "./data.js";
+import { MODULES, CLUSTERS, WORKSHOPS, PEOPLE, sessionsOf, titleOf } from "./data.js";
 import { mountChrome, liveWatch, initReveal, esc, statusOf } from "./ui.js";
 import { renderWorkshops } from "./cards.js";
 
@@ -51,6 +51,25 @@ if (modEl){
       </div>
     </div>`).join("");
   initReveal(modEl);
+}
+
+/* ---------- facilitators: everyone who leads a session, in session order ---------- */
+const facil = document.getElementById("facil");
+if (facil){
+  const names = [...new Set([...WORKSHOPS]
+    .sort((a, b) => a.startAt.localeCompare(b.startAt))
+    .flatMap(w => w.facilitators))];
+  facil.innerHTML = names.map(n => {
+    const p = PEOPLE[n] || { name: n };
+    return `
+    <figure class="person reveal">
+      <div class="person__img">${p.photo
+        ? `<img src="${esc(p.photo)}" alt="${esc(n)}" loading="lazy">`
+        : `<div class="person__mono" aria-hidden="true">${esc(n[0])}</div>`}</div>
+      <figcaption><b>${esc(n)}</b><span>${esc(p.role ? titleOf(p) : "Faci")}</span><span class="person__session">${esc(sessionsOf(n))}</span></figcaption>
+    </figure>`;
+  }).join("");
+  initReveal(facil);
 }
 
 /* ---------- clusters ---------- */

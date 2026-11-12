@@ -426,6 +426,7 @@ html.is-loading [data-in]{ opacity:0; transform:translateY(46px); }
 .person__mono{ display:grid; place-items:center; height:100%; font-family:var(--f-display); font-size:clamp(4rem,9vw,9rem); color:var(--violet-2); background:radial-gradient(circle at 50% 30%,rgba(124,58,237,.3),transparent 70%); }
 .person b{ display:block; margin-top:var(--sp-2); font-family:var(--f-display); font-weight:400; text-transform:uppercase; color:var(--star); font-size:clamp(1.5rem,2.6vw,2.5rem); line-height:1.05; }
 .person figcaption span{ color:var(--muted); }
+.person figcaption .person__session{ display:block; color:var(--lilac); font-size:.9rem; }
 .person__star{ position:relative; margin-left:2px; padding:0; border:0; background:none; font:inherit; color:var(--violet-2); cursor:pointer; }
 .person__star::after,.footer__star::after{ content:""; position:absolute; inset:-14px; }
 .person__star:hover,.footer__star:hover{ color:var(--lilac); }

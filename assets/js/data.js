@@ -144,10 +144,10 @@ export const WORKSHOPS = [
     durationLabel: "2h",
     platform: "Google Meet",
     joinUrl: "",
-    facilitators: ["Yeniri"],
+    facilitators: ["Yenuri"],
     tools: [],
     resources: [],
-    desc: "A live online workshop on content writing, led by Yeniri.",
+    desc: "A live online workshop on content writing, led by Yenuri.",
     registration: "open-to-all",
     capacity: null
   },
@@ -226,6 +226,49 @@ export const MANAGERS = [
   { name: "Sathini",  role: "HR Manager",          photo: "assets/img/team-sathini.jpg" },
   { name: "Shahnaas", role: "B2B Manager",         photo: "assets/img/team-shahnaas.jpg" }
 ];
+
+/* Leadership Body, in the order of the LB poster.
+   role = their LB title. "/ Faci" is added for anyone who leads a session (see titleOf). */
+export const LEADERSHIP = [
+  { name: "Kavishka", role: "HR Specialist",    photo: "assets/img/team-kavishka.jpg" },
+  { name: "Rasuwan",  role: "Brand Architect",  photo: "assets/img/team-rasuwan.jpg" },
+  { name: "Sandiv",   role: "Platform Head",    photo: "assets/img/team-sandiv.jpg" },
+  { name: "Tharushi", role: "ICOMM Specialist", photo: "assets/img/team-tharushi.jpg" },
+  { name: "Januki",   role: "Production Head",  photo: "assets/img/team-januki.jpg" },
+  { name: "Achintha", role: "Video Director",   photo: "assets/img/team-achintha.jpg" },
+  { name: "Damsith",  role: "Photography Head", photo: "assets/img/team-damsith.jpg" },
+  { name: "Nimna",    role: "Art Director",     photo: "assets/img/team-nimna.jpg" },
+  { name: "Yalindee", role: "Podcast Head",     photo: "assets/img/team-yalindee.jpg" },
+  { name: "Yenuri",   role: "Lead Journalist",  photo: "assets/img/team-yenuri.jpg" }
+];
+
+/* Short session names for people cards. */
+const SHORT = {
+  "graphics-online": "Graphics Design",
+  "video-editing-online": "Video Editing",
+  "podcast-online": "Podcast",
+  "content-writing-online": "Content Writing"
+};
+
+/* The sessions someone leads: "Video Editing", "DXP + Videography", or "" if none. */
+export function sessionsOf(name){
+  const led = WORKSHOPS
+    .filter(w => w.facilitators.includes(name))
+    .sort((a, b) => a.startAt.localeCompare(b.startAt))
+    .map(w => SHORT[w.id] || w.track);
+  return [...new Set(led)].join(" and ");
+}
+
+/* The caption under a photo: "Showcasing Manager / Faci", "Production Head / Faci".
+   With no title yet: "Graphics Design Faci", or "Leadership Body". */
+export function titleOf(p){
+  const s = sessionsOf(p.name);
+  if (p.role) return s ? p.role + " / Faci" : p.role;   /* non-breaking, so "/ Faci" never wraps alone */
+  return s ? s + " Faci" : "Leadership Body";
+}
+
+/* Everyone with a photo, by first name. */
+export const PEOPLE = Object.fromEntries([LEAD, ...MANAGERS, ...LEADERSHIP].map(p => [p.name, p]));
 
 /* ---- All entities, grouped, for the registration dropdown -- */
 export const ENTITY_GROUPS = [

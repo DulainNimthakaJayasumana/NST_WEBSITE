@@ -2,7 +2,7 @@
    contact.js: contact.html
    ============================================================ */
 
-import { SERIES, LEAD, MANAGERS } from "./data.js";
+import { SERIES, LEAD, MANAGERS, LEADERSHIP, titleOf } from "./data.js";
 import { mountChrome, initReveal, esc, icon, initials, isAiesecEmail } from "./ui.js";
 import { sendMessage, getMode } from "./store.js";
 
@@ -23,15 +23,22 @@ const person = (name, role, photo, credit) => `
 /* ---------- tier 1: MCVP ---------- */
 const lead = document.getElementById("orgLead");
 if (lead){
-  lead.innerHTML = person(LEAD.name, LEAD.role, LEAD.photo);
+  lead.innerHTML = person(LEAD.name, titleOf(LEAD), LEAD.photo);
   initReveal(lead);
 }
 
 /* ---------- tier 2: managers ---------- */
 const mgr = document.getElementById("orgManagers");
 if (mgr){
-  mgr.innerHTML = MANAGERS.map(m => person(m.name, m.role, m.photo, m.credit)).join("");
+  mgr.innerHTML = MANAGERS.map(m => person(m.name, titleOf(m), m.photo, m.credit)).join("");
   initReveal(mgr);
+}
+
+/* ---------- tier 3: leadership body ---------- */
+const lb = document.getElementById("orgLB");
+if (lb){
+  lb.innerHTML = LEADERSHIP.map(p => person(p.name, titleOf(p), p.photo)).join("");
+  initReveal(lb);
 }
 
 /* ---------- the credit: the asterisk beside the name, or the one in the footer ---------- */
