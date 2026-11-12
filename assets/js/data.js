@@ -56,7 +56,7 @@ export const CLUSTERS = [
     ])
   },
   {
-    id: "kandy", city: "Kandy", dateLabel: "Saturday 5 December",
+    id: "kandy", city: "Kandy", dateLabel: "Sunday 6 December",
     entities: aiesecIn([
       "EUSL", "SLIIT Kandy", "Vavuniya", "Jaffna", "Wayamba", "Rajarata", "Kandy"
     ])
@@ -179,8 +179,8 @@ export const WORKSHOPS = [
     type: "physical",
     phase: "kandy",
     track: "DXP + Videography",
-    startAt: "2026-12-05T10:00:00+05:30",
-    endAt:   "2026-12-05T17:30:00+05:30",
+    startAt: "2026-12-06T10:00:00+05:30",
+    endAt:   "2026-12-06T17:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "Full day · 10.00 – 17.30",
     venue: "University of Peradeniya",
