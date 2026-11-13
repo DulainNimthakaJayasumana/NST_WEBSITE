@@ -5,5 +5,8 @@
   "description": "NextGen Storytellers 2.0 workshop series site. National Showcasing Team, AIESEC in Sri Lanka.",
   "scripts": {
     "start": "node serve.js"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
