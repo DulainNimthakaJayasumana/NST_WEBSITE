@@ -167,7 +167,8 @@ class LiveWatch {
     return this.workshops.map(w => [
       w.id, w.title, w.type, w.startAt?.getTime() || 0, w.endAt?.getTime() || 0,
       w.joinUrl, w.venue, w.platform, w.capacity, w.seatsTaken,
-      w.registrationOpen, w.dateConfirmed, w.dateNote
+      w.registrationOpen, w.dateConfirmed, w.dateNote,
+      w.attendFrom?.getTime() || 0, w.attendUntil?.getTime() || 0
     ].join("~")).join("|");
   }
 
@@ -263,8 +264,9 @@ function initAnchors(){
   window.addEventListener("hashchange", () => { stop(); jump(location.hash); });
 }
 
-export function mountChrome({ active = "" } = {}){
+export function mountChrome({ active = "", takeover = true } = {}){
   initAnchors();
+  takeoverOff = !takeover;
   /* --- background layers --- */
   if (!document.querySelector(".cosmos")){
     const cosmos = document.createElement("div");
@@ -584,6 +586,7 @@ function markSeen(id){
 let lastBarKey = null;
 let lastTakeKey = null;
 let chromeBound = false;
+let takeoverOff = false;      // pages like attend.html keep the full-screen overlay away
 
 function paintLive(watch, { bar, take, warp }){
   const live = watch.live;
@@ -611,7 +614,7 @@ function paintLive(watch, { bar, take, warp }){
   }
 
   /* --- takeover --- */
-  if (!live){ lastTakeKey = null; hideTakeover(take, warp); return; }
+  if (!live || takeoverOff){ lastTakeKey = null; hideTakeover(take, warp); return; }
   if (seenSet().has(live.id)) return;
 
   const takeKey = `${live.id}|${live.joinUrl || ""}|${live._message || ""}|${live._preview ? 1 : 0}`;

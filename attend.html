@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Check in | NextGen Storytellers 2.0</title>
+<meta name="description" content="Mark your attendance for a NextGen Storytellers 2.0 session.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05020e">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="assets/js/loader.js"></script>
+</head>
+<body>
+
+<main class="page">
+  <section class="section" style="padding-top:clamp(120px,16vh,170px)">
+    <div class="shell">
+      <div class="attend" id="attend">
+        <span class="eyebrow">Attendance</span>
+        <h1 class="title title--lg" id="attTitle" style="margin-top:12px">Check in</h1>
+        <p class="lede" id="attWhen"></p>
+        <div class="attend__state" id="attOpenState"><i class="dot"></i><span>Loading…</span></div>
+
+        <form class="form" id="attForm" novalidate hidden>
+          <div class="field">
+            <label for="attEmail">The email you registered with</label>
+            <input id="attEmail" type="email" autocomplete="email" placeholder="name@aiesec.net" required>
+            <span class="field__err">Use your AIESEC email, like name@aiesec.net.</span>
+          </div>
+          <div class="form__msg" id="attMsg" role="alert"></div>
+          <button class="btn btn--lg btn--block" type="submit" id="attBtn">Mark my attendance</button>
+          <p class="muted" style="font-size:.86rem">This is how the team knows who to send a certificate to.
+            Only mark yourself; each email can check in once per session.</p>
+        </form>
+
+        <div id="attDone" hidden></div>
+        <div class="attend__pick" id="attPick" hidden></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script type="module" src="assets/js/attend.js"></script>
+</body>
+</html>

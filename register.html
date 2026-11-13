@@ -27,6 +27,23 @@
             One form for the whole series. Tick only the sessions you want. You do not
             have to take them all.
           </p>
+          <div class="findpass" data-in style="--i:2">
+            <button class="findpass__toggle" type="button" id="findToggle" aria-controls="findBox">
+              Already registered? <b>Find my pass</b>
+            </button>
+            <div class="findpass__box" id="findBox" hidden>
+              <form class="form" id="findForm" novalidate>
+                <div class="field">
+                  <label for="findEmail">The email you registered with</label>
+                  <div class="findpass__row">
+                    <input id="findEmail" type="email" autocomplete="email" placeholder="name@aiesec.net">
+                    <button class="btn btn--sm" type="submit" id="findBtn">Show my pass</button>
+                  </div>
+                </div>
+                <div class="form__msg" id="findMsg"></div>
+              </form>
+            </div>
+          </div>
         </div>
 
         <form class="form" id="regForm" novalidate data-in style="--i:2">
@@ -115,7 +132,7 @@
 
       <!-- ===== success ===== -->
       <div id="doneWrap" hidden>
-        <h1 class="title title--xl" style="text-align:center;margin-bottom:clamp(28px,4vw,56px)">See you there</h1>
+        <h1 class="title title--xl" id="doneTitle" style="text-align:center;margin-bottom:clamp(28px,4vw,56px)">See you there</h1>
         <div class="pass" id="pass"></div>
         <div class="btn-row" style="justify-content:center;margin-top:30px">
           <a class="btn btn--ghost" href="workshops.html">Back to the line-up</a>

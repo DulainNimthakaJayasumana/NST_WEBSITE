@@ -30,6 +30,8 @@ export const PATHS = {
   registrations: "registrations",
   messages:      "messages",
   subscribers:   "subscribers",
+  passes:        "passes",          // one per email, so people can find their pass again
+  attendance:    "attendance",      // one per session + email: "<workshopId>__<email>"
   settingsDoc:   "settings/live"
 };
 

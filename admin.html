@@ -48,6 +48,80 @@
         <div><h2 class="adm-h">By entity</h2><div id="statEntities"></div></div>
       </div>
 
+      <!-- attendance -->
+      <div class="adm-block" id="attendance">
+        <div class="adm-bar">
+          <div>
+            <h2 class="title title--md">Attendance</h2>
+            <p class="muted" id="attCount">Certificates go to the people marked here.</p>
+          </div>
+        </div>
+        <div class="adm2" style="margin-top:0">
+          <div>
+            <h3 class="adm-h">Scan passes at the door</h3>
+            <div class="field">
+              <label for="scanSession">Session</label>
+              <select id="scanSession"></select>
+            </div>
+            <div class="scan" id="scanBox" data-on="false">
+              <video id="scanVideo" playsinline muted></video>
+              <span class="scan__frame" aria-hidden="true"></span>
+              <p class="scan__idle" id="scanIdle">Camera is off. Start it, then hold a pass QR inside the frame.</p>
+            </div>
+            <div class="btn-row" style="margin-top:14px">
+              <button class="btn btn--sm" type="button" id="scanStart">Start camera</button>
+              <button class="btn btn--ghost btn--sm" type="button" id="scanStop" hidden>Stop camera</button>
+            </div>
+            <form class="form" id="scanManualForm" novalidate style="margin-top:18px">
+              <div class="field">
+                <label for="scanManual">No QR? Type their reference or email</label>
+                <div class="findpass__row">
+                  <input id="scanManual" type="text" placeholder="NGS-ABC123 or name@aiesec.net" autocomplete="off">
+                  <button class="btn btn--ghost btn--sm" type="submit">Mark present</button>
+                </div>
+              </div>
+            </form>
+            <div class="scanres" id="scanResult" aria-live="polite"><span>Scans show here.</span></div>
+            <div class="scanlog" id="scanLog"></div>
+          </div>
+          <div>
+            <h3 class="adm-h">Online check-in link</h3>
+            <p class="muted" style="margin-bottom:18px">Open the window during the session and share the link.
+              Delegates type their email and they are marked present. It only works while the window is open.</p>
+            <div class="form">
+              <div class="form__grid">
+                <div class="field">
+                  <label for="attWorkshop">Session</label>
+                  <select id="attWorkshop"></select>
+                </div>
+                <div class="field">
+                  <label for="attMinutes">Keep open for</label>
+                  <select id="attMinutes">
+                    <option value="10">10 minutes</option>
+                    <option value="15" selected>15 minutes</option>
+                    <option value="30">30 minutes</option>
+                    <option value="60">1 hour</option>
+                    <option value="120">2 hours</option>
+                  </select>
+                </div>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn--sm" type="button" id="attOpen">Open check-in now</button>
+                <button class="btn btn--ghost btn--sm" type="button" id="attClose">Close it</button>
+              </div>
+              <p class="attstate" id="attState"></p>
+              <div class="field">
+                <label for="attLink">Link to share</label>
+                <div class="findpass__row">
+                  <input id="attLink" type="text" readonly>
+                  <button class="btn btn--ghost btn--sm" type="button" id="attCopy">Copy</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- registrations -->
       <div class="adm-block">
         <div class="adm-bar">
@@ -60,14 +134,22 @@
             <button class="btn btn--sm" id="xlsxBtn">Export to Excel</button>
           </div>
         </div>
-        <div class="form__grid" style="margin-bottom:18px">
+        <div class="form__grid form__grid--3" style="margin-bottom:18px">
           <div class="field">
-            <label for="regSearch">Search</label>
+            <label for="regSearch">Search names</label>
             <input id="regSearch" type="search" placeholder="Name, email, entity, reference">
           </div>
           <div class="field">
             <label for="regSession">Session</label>
             <select id="regSession"><option value="">All sessions</option></select>
+          </div>
+          <div class="field">
+            <label for="regAttend">Attendance</label>
+            <select id="regAttend">
+              <option value="">Everyone</option>
+              <option value="yes">Attended</option>
+              <option value="no">Not attended</option>
+            </select>
           </div>
         </div>
         <div class="table-wrap">

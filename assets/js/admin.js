@@ -5,14 +5,17 @@
    real protection is firestore.rules. See README.
    ============================================================ */
 
-import { SERIES } from "./data.js";
+import { SERIES, shortTitle } from "./data.js";
 import { mountChrome, liveWatch, esc, fmt, statusOf } from "./ui.js";
 import { buildWorkbook } from "./xlsx.js";
+import { startScanner, parseCode } from "./qr.js";
 import {
   getModeAsync, setLiveSettings, saveWorkshop,
   listRegistrations, listMessages, onLiveSettings,
   removeRegistration, removeMessage,
-  signInWithGoogle, hasTeamAccess, signOutTeam, onAuth
+  signInWithGoogle, hasTeamAccess, signOutTeam, onAuth,
+  onAttendance, markAttendance, unmarkAttendance, attendanceId,
+  syncPasses, checkInOpen, cleanEmail
 } from "./store.js";
 
 mountChrome({ active: "" });
@@ -62,6 +65,9 @@ function openPanel(){
 getModeAsync().then(mode => {
   if (mode === "cloud"){
     onAuth(user => { if (user) admit(user); });
+  }else if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)){
+    // Rehearsal on this computer: the data is this browser's own, nothing to guard.
+    openPanel();
   }else{
     gForm.hidden = true;
     document.getElementById("gateLead").textContent =
@@ -94,20 +100,33 @@ document.getElementById("signOutBtn").addEventListener("click", async () => {
 /* ---------- boot ---------- */
 let workshops = [];
 let regs = [];
+let att = new Map();          // attendanceId -> { workshopId, email, at, method, by }
+let regsLoaded = false;
 let booted = false;
 
 async function boot(){
   if (booted) return;
   booted = true;
 
-  document.getElementById("modeLine").innerHTML =
-    `Connected to Firebase project <b>${esc(SERIES.name)}</b>. Changes are live for everyone.`;
+  const mode = await getModeAsync();
+  document.getElementById("modeLine").innerHTML = mode === "cloud"
+    ? `Connected to Firebase project <b>${esc(SERIES.name)}</b>. Changes are live for everyone.`
+    : `<b>Rehearsal mode.</b> Everything here is saved in this browser only, not the real database.`;
 
   liveWatch.onData(w => {
     workshops = w.workshops;
     fillWorkshopSelect();
     renderEditors();
     fillRegFilter();
+    fillAttSelects();
+    renderStats();
+    renderRegs();
+  });
+  liveWatch.on(() => renderAttWindow());
+
+  onAttendance(rows => {
+    att = new Map(rows.map(r => [r.id, r]));
+    renderRegs();
     renderStats();
   });
 
@@ -281,6 +300,7 @@ async function saveOne(id, btn){
 const COLS = [
   { title: "Ref",        width: 14, get: r => r.ref || "" },
   { title: "Name",       width: 24, get: r => r.name },
+  { title: "Attended",   width: 30, get: r => attendedIn(r).map(shortTitle).join(", "), ticks: true },
   { title: "Email",      width: 30, get: r => r.email },
   { title: "WhatsApp",   width: 16, get: r => r.phone },
   { title: "Entity",     width: 20, get: r => r.entity },
@@ -297,12 +317,38 @@ const COLS = [
 function visibleRegs(){
   const q = (document.getElementById("regSearch")?.value || "").trim().toLowerCase();
   const sess = document.getElementById("regSession")?.value || "";
-  return regs.filter(r =>
-    (!sess || attends(r, sess)) &&
-    (!q || COLS.some(c => String(c.get(r) ?? "").toLowerCase().includes(q))));
+  const present = document.getElementById("regAttend")?.value || "";
+  return regs.filter(r => {
+    if (sess && !attends(r, sess)) return false;
+    if (present){
+      const was = sess ? isPresent(sess, r.email) : attendedIn(r).length > 0;
+      if ((present === "yes") !== was) return false;
+    }
+    return !q || COLS.some(c => String(c.get(r) ?? "").toLowerCase().includes(q));
+  });
+}
+
+/* ---------- attendance helpers ---------- */
+const isPresent = (workshopId, email) => att.has(attendanceId(workshopId, email));
+const sessionsOfReg = r => workshops.filter(w => attends(r, w.id));
+const attendedIn = r => sessionsOfReg(r).filter(w => isPresent(w.id, r.email));
+
+/* The little tick chips in the table: one per session the person booked
+   (or only the filtered session). Green means marked present. */
+function ticksHtml(r){
+  const sess = document.getElementById("regSession")?.value || "";
+  const list = sessionsOfReg(r).filter(w => !sess || w.id === sess);
+  if (!list.length) return "-";
+  return `<span class="attset">${list.map(w => {
+    const a = att.get(attendanceId(w.id, r.email));
+    const how = a ? ` · ${a.method === "qr" ? "scanned" : a.method === "self" ? "checked in online" : "ticked"}${a.at ? ` ${fmt.time(a.at)}` : ""}` : "";
+    return `<label class="attchk${a ? " is-on" : ""}" title="${esc(w.title + how)}">
+      <input type="checkbox" data-att="${esc(w.id)}" data-email="${esc(cleanEmail(r.email))}" data-name="${esc(r.name || "")}" data-ref="${esc(r.ref || "")}" ${a ? "checked" : ""}>${esc(shortTitle(w))}</label>`;
+  }).join("")}</span>`;
 }
 
 function renderRegs(){
+  if (!regsLoaded) return;
   const tbody = document.querySelector("#regTable tbody");
   const list = visibleRegs();
   document.getElementById("regCount").textContent = !regs.length
@@ -312,7 +358,7 @@ function renderRegs(){
       : `Showing ${list.length} of ${regs.length}.`;
 
   tbody.innerHTML = list.length
-    ? list.map(r => `<tr>${COLS.map(c => `<td>${esc(c.get(r) || "-")}</td>`).join("")}
+    ? list.map(r => `<tr>${COLS.map(c => c.ticks ? `<td>${ticksHtml(r)}</td>` : `<td>${esc(c.get(r) || "-")}</td>`).join("")}
         <td class="rowdel-cell"><button class="rowdel" type="button" data-reg="${regs.indexOf(r)}" aria-label="Remove ${esc(r.name || "this registration")}">Remove</button></td></tr>`).join("")
     : `<tr><td colspan="${COLS.length + 1}" class="muted">${regs.length ? "Nobody matches that search." : "Nothing yet. Share the registration link."}</td></tr>`;
   document.getElementById("xlsxBtn").disabled = !list.length;
@@ -331,6 +377,7 @@ async function loadRegs(){
   document.querySelector("#regTable thead tr").innerHTML = COLS.map(c => `<th>${esc(c.title)}</th>`).join("") + `<th><span class="sr-only">Remove</span></th>`;
   try{
     regs = await listRegistrations();
+    regsLoaded = true;
   }catch(err){
     console.error(err);
     tbody.innerHTML = `<tr><td colspan="${COLS.length + 1}" class="muted">Could not load registrations.</td></tr>`;
@@ -339,10 +386,47 @@ async function loadRegs(){
   renderRegs();
   renderStats();
   syncSeatCounts();
+  // Give everyone who registered before passes existed a pass they can find by email.
+  syncPasses(regs)
+    .then(n => { if (n) console.info(`[NST] wrote ${n} pass${n === 1 ? "" : "es"}`); })
+    .catch(err => console.warn("[NST] pass sync failed:", err));
 }
 
 document.getElementById("regSearch")?.addEventListener("input", renderRegs);
 document.getElementById("regSession")?.addEventListener("change", renderRegs);
+document.getElementById("regAttend")?.addEventListener("change", renderRegs);
+
+/* Tick or untick attendance straight in the table. */
+document.querySelector("#regTable tbody")?.addEventListener("change", async e => {
+  const box = e.target.closest("input[data-att]");
+  if (!box) return;
+  const { att: workshopId, email, name, ref } = box.dataset;
+  const chip = box.closest(".attchk");
+  const w = workshops.find(x => x.id === workshopId);
+  if (!box.checked && !confirm(`Remove ${name || email}'s attendance for ${w?.title || workshopId}?`)){
+    box.checked = true;
+    return;
+  }
+  chip.classList.add("is-busy");
+  box.disabled = true;
+  try{
+    if (box.checked){
+      const row = await markAttendance({ workshopId, email, name, ref, method: "manual" });
+      att.set(row.id, row);
+    }else{
+      await unmarkAttendance(workshopId, email);
+      att.delete(attendanceId(workshopId, email));
+    }
+    renderRegs();
+    renderStats();
+  }catch(err){
+    console.error(err);
+    box.checked = !box.checked;
+    chip.classList.remove("is-busy");
+    box.disabled = false;
+    alert("Could not save that. Check you are signed in with a team account.");
+  }
+});
 
 /* One person can book several sessions, so a registration counts towards
    every workshop in workshopIds (older rows only have workshopId). */
@@ -399,8 +483,16 @@ document.getElementById("xlsxBtn")?.addEventListener("click", () => {
   const list = visibleRegs();
   const blob = buildWorkbook([
     { name: "Registrations", columns: COLS, rows: list.map(r => COLS.map(c => String(c.get(r) ?? ""))) },
-    { name: "By session", columns: [{ title: "Session", width: 40 }, { title: "People", width: 10 }, { title: "Seats", width: 10 }],
-      rows: workshops.map(w => [w.title, list.filter(r => attends(r, w.id)).length, Number.isFinite(w.capacity) ? w.capacity : "No limit"]) },
+    { name: "Attendance", columns: [
+        { title: "Name", width: 24 }, { title: "Email", width: 30 }, { title: "Entity", width: 20 },
+        { title: "Session", width: 36 }, { title: "Date", width: 14 }, { title: "Attended", width: 10 },
+        { title: "Marked at", width: 18 }, { title: "How", width: 16 }],
+      rows: attendanceRows(list) },
+    { name: "By session", columns: [{ title: "Session", width: 40 }, { title: "People", width: 10 }, { title: "Attended", width: 10 }, { title: "Seats", width: 10 }],
+      rows: workshops.map(w => {
+        const booked = uniqueByEmail(list.filter(r => attends(r, w.id)));
+        return [w.title, booked.length, booked.filter(r => isPresent(w.id, r.email)).length, Number.isFinite(w.capacity) ? w.capacity : "No limit"];
+      }) },
     { name: "By entity", columns: [{ title: "Entity", width: 30 }, { title: "People", width: 10 }],
       rows: tally(list, r => r.entity) }
   ]);
@@ -411,18 +503,45 @@ document.getElementById("xlsxBtn")?.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 });
 
+/* One row per person per session they booked: the list certificates are made from. */
+const HOW = { qr: "QR scan", manual: "Ticked by team", self: "Online check-in" };
+function uniqueByEmail(list){
+  const seen = new Set();
+  return list.filter(r => { const e = cleanEmail(r.email); if (seen.has(e)) return false; seen.add(e); return true; });
+}
+function attendanceRows(list){
+  const rows = [];
+  const seen = new Set();
+  for (const r of list){
+    for (const w of sessionsOfReg(r)){
+      const id = attendanceId(w.id, r.email);
+      if (seen.has(id)) continue;          // the same person registered twice
+      seen.add(id);
+      const a = att.get(id);
+      rows.push([r.name, r.email, r.entity, w.title, w.startAt ? fmt.date(w.startAt) : "",
+        a ? "Yes" : "No", a?.at ? `${fmt.date(a.at)} ${fmt.time(a.at)}` : "", a ? (HOW[a.method] || a.method || "") : ""]);
+    }
+  }
+  return rows;
+}
+
 /* ---------- stats ---------- */
 function renderStats(){
   const host = document.getElementById("kpis");
   if (!host) return;
   const online   = regs.filter(r => workshops.some(w => w.type === "online" && attends(r, w.id))).length;
   const physical = regs.filter(r => workshops.some(w => w.type === "physical" && attends(r, w.id))).length;
+  const present  = new Set([...att.values()].map(a => a.email)).size;
   host.innerHTML = [
     [regs.length, "People registered"],
     [online, "For online sessions"],
     [physical, "For physical days"],
+    [present, "Attended at least one"],
     [new Set(regs.map(r => r.entity).filter(Boolean)).size, "Entities"]
   ].map(([n, l]) => `<div class="kpi"><b>${n}</b><span>${esc(l)}</span></div>`).join("");
+
+  const ac = document.getElementById("attCount");
+  if (ac) ac.textContent = `${att.size} check-in${att.size === 1 ? "" : "s"} so far. Certificates go to the people marked here.`;
 
   const bars = (rows, cap) => {
     const max = Math.max(1, ...rows.map(r => r[1]));
@@ -479,3 +598,250 @@ async function loadMsgs(){
     }
   };
 }
+
+/* ============================================================
+   Attendance: QR scanner at the door + online check-in window
+   ============================================================ */
+const scanSel   = document.getElementById("scanSession");
+const attSel    = document.getElementById("attWorkshop");
+const scanBox   = document.getElementById("scanBox");
+const scanRes   = document.getElementById("scanResult");
+const scanLog   = document.getElementById("scanLog");
+
+/* Default the scanner to today's physical day (or the next one), and the
+   online window to the session that is on now (or the next online one). */
+function fillAttSelects(){
+  const opts = list => list.map(w =>
+    `<option value="${esc(w.id)}">${esc(w.title)}${w.startAt ? ` · ${esc(fmt.short(w.startAt))}` : ""}</option>`).join("");
+  const now = new Date();
+  const today = fmt.date(now);
+  const upcoming = list => list.find(w => w.endAt && w.endAt > now) || list[list.length - 1];
+
+  const keepScan = scanSel.value;
+  const physical = workshops.filter(w => w.type === "physical");
+  const online = workshops.filter(w => w.type !== "physical");
+  scanSel.innerHTML = opts(physical) + `<optgroup label="Online">${opts(online)}</optgroup>`;
+  scanSel.value = keepScan || (physical.find(w => w.startAt && fmt.date(w.startAt) === today) || upcoming(physical) || workshops[0])?.id || "";
+
+  const keepAtt = attSel.value;
+  attSel.innerHTML = opts(online) + `<optgroup label="Physical">${opts(physical)}</optgroup>`;
+  attSel.value = keepAtt || (online.find(w => statusOf(w, now) === "live") || upcoming(online) || workshops[0])?.id || "";
+  renderAttWindow();
+}
+
+/* ---------- who is this code? ---------- */
+function lookup(code){
+  const p = parseCode(code);
+  if (!p) return null;
+  let mine = p.email ? regs.filter(r => cleanEmail(r.email) === p.email) : [];
+  if (!mine.length && p.ref){
+    const byRef = regs.find(r => r.ref === p.ref);
+    if (byRef) mine = regs.filter(r => cleanEmail(r.email) === cleanEmail(byRef.email));
+  }
+  const email = p.email || (mine[0] && cleanEmail(mine[0].email)) || "";
+  return { ...p, email, regs: mine, person: mine[mine.length - 1] || null };
+}
+
+let lastCode = "", lastAt = 0;
+function beep(ok){
+  try{
+    const ctx = beep.ctx ||= new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.frequency.value = ok ? 880 : 300;
+    g.gain.setValueAtTime(.15, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ctx.currentTime + (ok ? .18 : .35));
+    o.connect(g).connect(ctx.destination);
+    o.start(); o.stop(ctx.currentTime + .4);
+  }catch{ /* no audio, fine */ }
+  try{ navigator.vibrate?.(ok ? 60 : [80, 60, 80]); }catch{}
+}
+
+function flash(kind){
+  scanBox.classList.remove("flash-ok", "flash-warn");
+  void scanBox.offsetWidth;
+  scanBox.classList.add(kind === "ok" ? "flash-ok" : "flash-warn");
+  setTimeout(() => scanBox.classList.remove("flash-ok", "flash-warn"), 900);
+}
+
+function showResult(kind, title, lines = [], action = null){
+  scanRes.className = `scanres scanres--${kind}`;
+  scanRes.innerHTML = `<b>${esc(title)}</b>${lines.map(l => `<span>${esc(l)}</span>`).join("")}`;
+  if (action){
+    const b = document.createElement("button");
+    b.className = "btn btn--sm";
+    b.type = "button";
+    b.textContent = action.label;
+    b.addEventListener("click", action.run, { once: true });
+    scanRes.appendChild(b);
+  }
+}
+
+function logLine(text){
+  scanLog.insertAdjacentHTML("afterbegin", `<span>${esc(fmt.time(new Date()))} · ${esc(text)}</span>`);
+}
+
+async function handleCode(code, method){
+  const now = Date.now();
+  if (code === lastCode && now - lastAt < 4000) return;     // the same pass held in front of the camera
+  lastCode = code; lastAt = now;
+
+  const w = workshops.find(x => x.id === scanSel.value);
+  if (!w){ showResult("err", "Pick a session first."); return; }
+  const who = lookup(code);
+  if (!who || !who.email){
+    beep(false); flash("warn");
+    showResult("err", who?.ref ? `No registration with ${who.ref}` : "That is not a NextGen pass",
+      who?.ref ? ["Check the code, or tap Refresh on the registrations list if they registered just now."] : []);
+    return;
+  }
+
+  const name = who.person?.name || who.email;
+  const entity = who.person?.entity || "";
+  const prev = att.get(attendanceId(w.id, who.email));
+  if (prev){
+    beep(false); flash("warn");
+    showResult("warn", `${name} is already checked in`,
+      [entity, `${shortTitle(w)} · marked ${prev.at ? fmt.time(prev.at) : "earlier"}${prev.method === "qr" ? " by scan" : ""}`].filter(Boolean));
+    return;
+  }
+
+  const mark = async () => {
+    try{
+      const row = await markAttendance({ workshopId: w.id, email: who.email, name: who.person?.name || "", ref: who.person?.ref || who.ref || "", method });
+      att.set(row.id, row);
+      beep(true); flash("ok");
+      showResult("ok", `${name} checked in`, [entity, `${shortTitle(w)} · ${fmt.time(new Date())}`].filter(Boolean));
+      logLine(`${name} · ${shortTitle(w)}`);
+      renderRegs(); renderStats();
+    }catch(err){
+      console.error(err);
+      beep(false);
+      showResult("err", "Could not save that check-in", ["Check the connection and scan again."]);
+      lastCode = "";
+    }
+  };
+
+  if (!who.regs.length){
+    beep(false); flash("warn");
+    showResult("warn", `${who.email} is not on the registration list`,
+      ["If they registered just now, tap Refresh on the list below first."],
+      { label: "Mark present anyway", run: mark });
+    return;
+  }
+  if (!who.regs.some(r => attends(r, w.id))){
+    beep(false); flash("warn");
+    const booked = [...new Set(who.regs.flatMap(r => sessionsOfReg(r).map(shortTitle)))].join(", ") || "nothing";
+    showResult("warn", `${name} did not book ${shortTitle(w)}`, [entity, `Booked: ${booked}`].filter(Boolean),
+      { label: "Mark present anyway", run: mark });
+    return;
+  }
+  await mark();
+}
+
+/* ---------- camera ---------- */
+let stopScan = null;
+const startBtn = document.getElementById("scanStart");
+const stopBtn  = document.getElementById("scanStop");
+
+startBtn.addEventListener("click", async () => {
+  startBtn.disabled = true;
+  startBtn.textContent = "Starting…";
+  try{
+    stopScan = await startScanner(document.getElementById("scanVideo"), text => handleCode(text, "qr"));
+    scanBox.dataset.on = "true";
+    document.getElementById("scanIdle").hidden = true;
+    startBtn.hidden = true;
+    stopBtn.hidden = false;
+    showResult("ok", "Camera on", [`Scanning for ${shortTitle(workshops.find(x => x.id === scanSel.value))}. Hold a pass QR inside the frame.`]);
+  }catch(err){
+    console.warn(err);
+    showResult("err", "Could not start the camera",
+      [err.name === "NotAllowedError" ? "Allow camera access for this site in the browser, then try again." : (err.message || String(err))]);
+  }finally{
+    startBtn.disabled = false;
+    startBtn.textContent = "Start camera";
+  }
+});
+
+stopBtn.addEventListener("click", () => {
+  stopScan?.(); stopScan = null;
+  scanBox.dataset.on = "false";
+  document.getElementById("scanIdle").hidden = false;
+  startBtn.hidden = false;
+  stopBtn.hidden = true;
+});
+
+scanSel.addEventListener("change", () => { lastCode = ""; });
+
+document.getElementById("scanManualForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const input = document.getElementById("scanManual");
+  const v = input.value.trim();
+  if (!v) return;
+  lastCode = "";
+  handleCode(v, "manual").then(() => { input.value = ""; });
+});
+
+/* ---------- online check-in window ---------- */
+function attLink(id){
+  return new URL(`attend.html?w=${encodeURIComponent(id)}`, location.href).href;
+}
+
+let lastWinKey = "";
+function renderAttWindow(){
+  const w = workshops.find(x => x.id === attSel?.value);
+  const state = document.getElementById("attState");
+  if (!w || !state) return;
+  const link = document.getElementById("attLink");
+  if (link.value !== attLink(w.id)) link.value = attLink(w.id);
+  const now = new Date();
+  const open = checkInOpen(w, now);
+  let text;
+  if (open){
+    const left = Math.max(0, Math.round((w.attendUntil - now) / 1000));
+    const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
+    text = `Open now, until ${fmt.time(w.attendUntil)} (${mm}:${ss} left).`;
+  }else if (w.attendFrom && w.attendFrom > now){
+    text = `Opens at ${fmt.time(w.attendFrom)}.`;
+  }else if (w.attendUntil){
+    text = `Closed. It was last open until ${fmt.date(w.attendUntil)} ${fmt.time(w.attendUntil)}.`;
+  }else{
+    text = "Closed. Not opened yet for this session.";
+  }
+  const key = `${w.id}|${text}`;
+  if (key === lastWinKey) return;
+  lastWinKey = key;
+  state.textContent = text;
+  state.classList.toggle("is-open", open);
+}
+attSel.addEventListener("change", renderAttWindow);
+
+async function setWindow(open){
+  const w = workshops.find(x => x.id === attSel.value);
+  if (!w) return;
+  const btn = document.getElementById(open ? "attOpen" : "attClose");
+  btn.disabled = true;
+  try{
+    const now = new Date();
+    const mins = Number(document.getElementById("attMinutes").value) || 15;
+    await saveWorkshop(w.id, open
+      ? { id: w.id, attendFrom: now, attendUntil: new Date(now.getTime() + mins * 60e3) }
+      : { id: w.id, attendUntil: now });
+  }catch(err){
+    console.error(err);
+    alert("Could not change the check-in window. Check you are signed in with a team account.");
+  }finally{
+    btn.disabled = false;
+  }
+}
+document.getElementById("attOpen").addEventListener("click", () => setWindow(true));
+document.getElementById("attClose").addEventListener("click", () => setWindow(false));
+
+document.getElementById("attCopy").addEventListener("click", async () => {
+  const link = document.getElementById("attLink");
+  const btn = document.getElementById("attCopy");
+  try{ await navigator.clipboard.writeText(link.value); }
+  catch{ link.select(); document.execCommand("copy"); }
+  btn.textContent = "Copied";
+  setTimeout(() => { btn.textContent = "Copy"; }, 1400);
+});
