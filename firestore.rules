@@ -77,7 +77,7 @@ service cloud.firestore {
                     && str(request.resource.data.workshopId, 80)
                     && request.resource.data.workshopIds is list
                     && request.resource.data.workshopIds.size() >= 1
-                    && request.resource.data.workshopIds.size() <= 8
+                    && request.resource.data.workshopIds.size() <= 12
                     && strOrEmpty(request.resource.data.get('phone', ''), 40)
                     && strOrEmpty(request.resource.data.get('entity', ''), 120)
                     && strOrEmpty(request.resource.data.get('notes', ''), 2000)
@@ -92,6 +92,70 @@ service cloud.firestore {
                     && str(request.resource.data.body, 4000)
                     && request.resource.data.keys().size() <= 10;
       allow read, update, delete: if team();
+    }
+
+    /* ---- passes (document id is the email address) ----
+       A copy of what the pass shows, so a delegate can type their
+       email and see it again. No phone number in here. Anyone may
+       read one pass by its email; nobody but the team may list them.
+       A second registration may add sessions but never swap the
+       reference or take sessions away. */
+    function validPass(email) {
+      let d = request.resource.data;
+      return aiesecEmail(d.email) && d.email == email
+          && str(d.ref, 20)
+          && str(d.name, 120)
+          && strOrEmpty(d.get('entity', ''), 120)
+          && d.workshopIds is list
+          && d.workshopIds.size() >= 1
+          && d.workshopIds.size() <= 12
+          && d.get('modules', []) is list
+          && d.keys().hasOnly(['email', 'ref', 'name', 'entity', 'workshopIds', 'modules', 'updatedAt']);
+    }
+
+    match /passes/{email} {
+      allow get: if true;
+      allow list, delete: if team();
+      allow create: if team() || validPass(email);
+      allow update: if team()
+                    || (validPass(email)
+                        && request.resource.data.ref == resource.data.ref
+                        && request.resource.data.workshopIds.hasAll(resource.data.workshopIds));
+    }
+
+    /* ---- attendance (document id is "<workshopId>__<email>") ----
+       The team marks people present (QR scan at the door, or a
+       tick in the table). A delegate can mark themselves only while
+       the team has opened that session's check-in window, only with
+       a pass that includes that session, and only once. */
+    function checkInOpen(workshopId) {
+      let w = get(/databases/$(database)/documents/workshops/$(workshopId)).data;
+      return w.get('attendFrom', null) is timestamp
+          && w.get('attendUntil', null) is timestamp
+          && w.attendFrom <= request.time
+          && request.time < w.attendUntil;
+    }
+
+    function selfCheckIn(id) {
+      let d = request.resource.data;
+      let passPath = /databases/$(database)/documents/passes/$(d.email);
+      return d.method == 'self' && d.by == 'self'
+          && aiesecEmail(d.email)
+          && str(d.workshopId, 80)
+          && id == d.workshopId + '__' + d.email
+          && d.at == request.time
+          && strOrEmpty(d.get('name', ''), 120)
+          && strOrEmpty(d.get('ref', ''), 20)
+          && d.keys().hasOnly(['workshopId', 'email', 'name', 'ref', 'method', 'by', 'at'])
+          && exists(passPath)
+          && get(passPath).data.workshopIds.hasAny([d.workshopId])
+          && checkInOpen(d.workshopId);
+    }
+
+    match /attendance/{id} {
+      allow get: if true;
+      allow list, update, delete: if team();
+      allow create: if team() || selfCheckIn(id);
     }
 
     /* ---- mailing list (document id is the email address) ---- */
