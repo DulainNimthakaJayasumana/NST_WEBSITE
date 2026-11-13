@@ -365,7 +365,7 @@ export const FAQ = [
     q: "How do I register?",
     a: "Open the Register page, tick your sessions, then add your name, @aiesec.net " +
        "email, phone number and entity. If you tick a physical day it also asks what you want to " +
-       "focus on and any dietary needs. When you confirm, you get a pass with your " +
+       "focus on. When you confirm, you get a pass with your " +
        "reference code that you can save or print."
   },
   {

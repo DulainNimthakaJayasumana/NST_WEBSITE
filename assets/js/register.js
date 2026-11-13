@@ -14,7 +14,6 @@ const entitySel = document.getElementById("entity");
 const msg       = document.getElementById("formMsg");
 const submitBtn = document.getElementById("submitBtn");
 const modulesFld= document.getElementById("modulesField");
-const dietFld   = document.getElementById("dietField");
 
 let workshops = [];
 const preselect = new URLSearchParams(location.search).get("w") || "";
@@ -77,7 +76,6 @@ function picked(){
 function onPick(){
   const anyPhysical = picked().some(w => w.type === "physical");
   modulesFld.hidden = !anyPhysical;
-  dietFld.hidden = !anyPhysical;
   const err = document.getElementById("errWorkshop");
   if (err) err.style.display = "";
 }
@@ -164,7 +162,6 @@ form.addEventListener("submit", async e => {
     role:   document.getElementById("role").value,
     level:  document.getElementById("level").value,
     modules: [...form.querySelectorAll('input[name="modules"]:checked')].map(c => c.value),
-    diet:   document.getElementById("diet").value.trim(),
     notes:  document.getElementById("notes").value.trim()
   };
 
