@@ -206,7 +206,7 @@ export const WORKSHOPS = [
     facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
     resources: [],
-    desc: "A full hands-on day: Digital Experience Platform fundamentals before lunch, " +
+    desc: "A full hands-on day: DXP handling in OBS and vMix before lunch, " +
           "then a practical videography block: shoot, direct and review on the spot.",
     registration: "register",
     capacity: null,
@@ -229,7 +229,7 @@ export const WORKSHOPS = [
     tools: ["Phone", "Laptop"],
     resources: [],
     desc: "The Colombo day, run for the Kandy, Northern and North-Western cluster: " +
-          "DXP theory in the morning, videography practical through the afternoon.",
+          "DXP handling in OBS and vMix in the morning, videography practical through the afternoon.",
     registration: "register",
     capacity: null,
     entities: CLUSTERS[1].entities,
@@ -241,10 +241,10 @@ export const WORKSHOPS = [
 export const MODULES = [
   {
     id: "dxp",
-    title: "DXP",
-    full: "Digital Experience Platform",
+    title: "DXP handling",
+    full: "DXP handling",
     facilitators: ["Dulain", "Achintha"],
-    covers: "Basic DXP theories",
+    covers: "Hands-on with OBS and vMix",
     where: "Physical workshops only"
   },
   {
@@ -339,7 +339,7 @@ export const OUTCOMES = [
   {
     icon: "rocket",
     title: "A DXP you can run",
-    text: "The digital experience fundamentals every entity needs to showcase its own story."
+    text: "Hands-on DXP handling in OBS and vMix, so your entity can run its own."
   }
 ];
 
@@ -377,7 +377,7 @@ export const FAQ = [
        "and membership R&R on 20 December, one to two hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
-       "DXP and hands-on videography."
+       "DXP handling in OBS and vMix and hands-on videography."
   },
   {
     q: "Which physical workshop should I come to?",
@@ -410,7 +410,7 @@ export const FAQ = [
     q: "Do I need to be experienced already?",
     a: "No. The series starts from the basics: the brand masterclass builds up from " +
        "the BlueBook rules and the AIESEC resources pack, the physical day covers " +
-       "basic DXP and videography theory before the practical, and the form has a " +
+       "the basics of DXP handling in OBS and vMix and of videography, and the form has a " +
        "“Complete beginner” option."
   },
   {
@@ -420,6 +420,6 @@ export const FAQ = [
        "; Graphics Design is " + crew("graphics-online") +
        "; the Podcast workshop is " + crew("podcast-online") + "; Content Writing is " + crew("content-writing-online") +
        "; the HR session is " + crew("hr-online") +
-       ". On the physical days, DXP and videography are both led by " + crew("dxp") + "."
+       ". On the physical days, DXP handling and videography are both led by " + crew("dxp") + "."
   }
 ];
