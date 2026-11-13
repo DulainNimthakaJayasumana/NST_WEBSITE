@@ -738,3 +738,15 @@ table.data tbody tr:hover td.rowdel-cell{ background:#150b2c; }
 }
 .form__grid--3{ grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) minmax(0,1fr); gap:24px var(--sp-4); }
 @media (max-width:860px){ .form__grid--3{ grid-template-columns:minmax(0,1fr); } }
+
+/* admin: live attendance count under the check-in window */
+.attdash{ margin:6px 0 22px; padding:18px 20px; box-shadow:inset 0 0 0 1px var(--hair); }
+.attdash__top{ display:flex; align-items:center; gap:16px; }
+.attdash__top b{ font-family:var(--f-display); font-weight:400; font-size:3.4rem; line-height:1; color:#fff; }
+.attdash__top span{ font-size:.92rem; color:var(--muted); line-height:1.4; }
+.attdash__bar{ height:6px; margin:14px 0 12px; background:var(--hair-2); border-radius:3px; overflow:hidden; }
+.attdash__bar i{ display:block; height:100%; background:var(--ok); border-radius:3px; transition:width .4s var(--ease); }
+.attdash__split{ display:flex; flex-wrap:wrap; gap:6px 16px; font-size:.86rem; color:var(--ink); }
+.attdash__split .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:1px; }
+.attdash__recent{ list-style:none; margin:14px 0 0; padding:12px 0 0; border-top:1px solid var(--hair-2); display:grid; gap:6px; font-size:.88rem; }
+.attdash__recent li{ display:flex; justify-content:space-between; gap:12px; }
