@@ -74,22 +74,42 @@ export const CLUSTERS = [
    ----------------------------------------------------------- */
 export const WORKSHOPS = [
   {
+    id: "brand-online",
+    title: "Brand Masterclass",
+    type: "online",
+    phase: "online",
+    track: "Brand",
+    startAt: "2026-11-21T19:00:00+05:30",
+    endAt:   "2026-11-21T20:00:00+05:30",
+    dateConfirmed: true,
+    durationLabel: "1h",
+    platform: "Google Meet",
+    joinUrl: "",
+    facilitators: ["Rasuwan"],
+    tools: [],
+    resources: ["BlueBook", "AIESEC Resources Pack"],
+    desc: "Staying on brand from the ground up: the BlueBook rules and how to use the " +
+          "AIESEC resources pack. Led by Rasuwan.",
+    registration: "open-to-all",
+    capacity: null
+  },
+  {
     id: "graphics-online",
     title: "Graphics Design Masterclass",
     type: "online",
     phase: "online",
     track: "Design",
-    startAt: "2026-11-21T19:00:00+05:30",
-    endAt:   "2026-11-21T21:30:00+05:30",
+    startAt: "2026-11-22T19:00:00+05:30",
+    endAt:   "2026-11-22T20:30:00+05:30",
     dateConfirmed: true,
-    durationLabel: "2h 30min",
+    durationLabel: "1h 30min",
     platform: "Google Meet",
     joinUrl: "",
-    facilitators: ["Rasuwan", "Nimna"],
+    facilitators: ["Nimna"],
     tools: ["Adobe Photoshop"],
-    resources: ["BlueBook", "AIESEC Resources Pack"],
-    desc: "Brand-correct design from the ground up: the BlueBook rules, the AIESEC " +
-          "resources pack, and a live Photoshop build of a real campaign asset.",
+    resources: [],
+    desc: "Hands-on graphic design in Photoshop: layout, type and a live build of a " +
+          "real campaign asset. Led by Nimna.",
     registration: "open-to-all",
     capacity: null
   },
@@ -138,8 +158,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Content Writing",
-    startAt: "2026-12-21T19:00:00+05:30",
-    endAt:   "2026-12-21T21:00:00+05:30",
+    startAt: "2026-12-19T19:00:00+05:30",
+    endAt:   "2026-12-19T21:00:00+05:30",
     dateConfirmed: true,
     durationLabel: "2h",
     platform: "Google Meet",
@@ -148,6 +168,26 @@ export const WORKSHOPS = [
     tools: [],
     resources: [],
     desc: "A live online workshop on content writing, led by Yenuri.",
+    registration: "open-to-all",
+    capacity: null
+  },
+  {
+    id: "hr-online",
+    title: "HR Session: Managing a Showcasing Team",
+    type: "online",
+    phase: "online",
+    track: "HR",
+    startAt: "2026-12-20T19:00:00+05:30",
+    endAt:   "2026-12-20T21:00:00+05:30",
+    dateConfirmed: true,
+    durationLabel: "2h",
+    platform: "Google Meet",
+    joinUrl: "",
+    facilitators: ["Sathini"],
+    tools: [],
+    resources: [],
+    desc: "How to manage a showcasing team, and how to run membership R&R " +
+          "(rewards and recognition) that keeps people engaged. Led by Sathini.",
     registration: "open-to-all",
     capacity: null
   },
@@ -244,10 +284,12 @@ export const LEADERSHIP = [
 
 /* Short session names for people cards. */
 const SHORT = {
+  "brand-online": "Brand",
   "graphics-online": "Graphics Design",
   "video-editing-online": "Video Editing",
   "podcast-online": "Podcast",
-  "content-writing-online": "Content Writing"
+  "content-writing-online": "Content Writing",
+  "hr-online": "HR"
 };
 
 /* The sessions someone leads: "Video Editing", "DXP + Videography", or "" if none. */
@@ -328,9 +370,11 @@ export const FAQ = [
   },
   {
     q: "What is the difference between the online and the physical sessions?",
-    a: "The four online sessions run live on Google Meet: Video Editing on 14 " +
-       "November, Graphics Design on 21 November, a Podcast workshop on 12 December " +
-       "and Content Writing on 21 December, two to two and a half hours each. The " +
+    a: "The six online sessions run live on Google Meet: Video Editing on 14 " +
+       "November, a Brand Masterclass on 21 November, Graphics Design on 22 November, " +
+       "a Podcast workshop on 12 December, " +
+       "Content Writing on 19 December and an HR session on managing a showcasing team " +
+       "and membership R&R on 20 December, one to two hours each. The " +
        "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
        "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
        "DXP and hands-on videography."
@@ -364,7 +408,7 @@ export const FAQ = [
   },
   {
     q: "Do I need to be experienced already?",
-    a: "No. The series starts from the basics: the design masterclass builds up from " +
+    a: "No. The series starts from the basics: the brand masterclass builds up from " +
        "the BlueBook rules and the AIESEC resources pack, the physical day covers " +
        "basic DXP and videography theory before the practical, and the form has a " +
        "“Complete beginner” option."
@@ -372,8 +416,10 @@ export const FAQ = [
   {
     q: "Who is teaching?",
     a: "Each session card names its facilitators. Video Editing is " +
-       crew("video-editing-online") + "; Graphics Design is " + crew("graphics-online") +
+       crew("video-editing-online") + "; the Brand Masterclass is " + crew("brand-online") +
+       "; Graphics Design is " + crew("graphics-online") +
        "; the Podcast workshop is " + crew("podcast-online") + "; Content Writing is " + crew("content-writing-online") +
+       "; the HR session is " + crew("hr-online") +
        ". On the physical days, DXP and videography are both led by " + crew("dxp") + "."
   }
 ];

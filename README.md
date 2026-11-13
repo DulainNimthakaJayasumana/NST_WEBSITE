@@ -210,11 +210,13 @@ untick **Date is confirmed**, the site shows a "date to be confirmed" note.
 | Session | Date |
 |---|---|
 | Video Editing Masterclass | Sat 14 Nov, 19:00–21:00 |
-| Graphics Design Masterclass | Sat 21 Nov, 19:00–21:30 |
+| Brand Masterclass (Rasuwan) | Sat 21 Nov, 19:00–20:00 |
+| Graphics Design Masterclass (Nimna) | Sun 22 Nov, 19:00–20:30 |
 | Physical · Colombo | Sat 28 Nov, 10:00–17:30 |
 | Physical · Kandy | Sun 6 Dec, 10:00–17:30 |
 | Podcast Workshop (online) | Sat 12 Dec, 19:00–21:00 |
-| Content Writing Workshop (online) | Mon 21 Dec, 19:00–21:00 |
+| Content Writing Workshop (online) | Sat 19 Dec, 19:00–21:00 |
+| HR Session: Managing a Showcasing Team (online, Sathini) | Sun 20 Dec, 19:00–21:00 |
 
 All times are Asia/Colombo and are rendered in Sri Lanka time for every
 visitor, wherever they are.
