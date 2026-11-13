@@ -292,6 +292,14 @@ const SHORT = {
   "hr-online": "HR"
 };
 
+/* A short name for any session: "Brand", "HR", "Colombo". */
+export function shortTitle(w){
+  if (!w) return "";
+  if (SHORT[w.id]) return SHORT[w.id];
+  if (w.type === "physical") return (w.title.split("·")[1] || w.title).trim();
+  return w.track || w.title;
+}
+
 /* The sessions someone leads: "Video Editing", "DXP + Videography", or "" if none. */
 export function sessionsOf(name){
   const led = WORKSHOPS

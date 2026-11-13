@@ -166,6 +166,8 @@ Vercel, GitHub Pages: just upload the folder.
 | `registrations/{auto}` | the register form | team only |
 | `messages/{auto}` | the contact form | team only |
 | `subscribers/{email}` | the "keep me posted" box | team only |
+| `passes/{email}` | the register form (and the admin page fills in older ones) | one at a time by email |
+| `attendance/{session}__{email}` | admin page (scan or tick), or the check-in link | team; one row by its id |
 
 A `workshops` document only needs the fields you want to **override**: the
 rest falls back to `data.js`. So to publish a Google Meet link, one field is enough:
@@ -250,6 +252,24 @@ registrations, sessions and entities), the live switch and the session editors.
 - **Firebase connected:** sign in with Google. This is the real protection, because
   `firestore.rules` only lets the emails listed in `team()` read registrations.
 - **Firebase unreachable:** the page says so and stays closed.
+- **On this computer:** `http://localhost:5179/admin.html?local` opens a rehearsal copy that
+  saves to this browser only. Add `?local` to the other pages in the same tab to rehearse
+  registering and checking in without touching the real database.
+
+### Attendance (for certificates)
+
+- **Every pass has a QR.** It holds the reference and the email. Delegates who lose it type
+  their email under **Find my pass** on the register page (`/register?find=1` opens it).
+- **Physical days:** in *Attendance* pick the day, press **Start camera** and scan passes.
+  Green means checked in; amber means already in, or they did not book that day (you can
+  still mark them). No QR? Type their reference or email.
+- **Online sessions:** pick the session, choose how long, press **Open check-in now** and
+  share the link (`/attend?w=<session id>`). Delegates enter their email to mark themselves.
+  It stops working when the window closes; `firestore.rules` enforces that, not just the page.
+- **In the table** each person has a chip per session they booked: tick to mark present,
+  untick to remove. Filter by session and *Attended / Not attended*.
+- **Export to Excel** now has an *Attendance* sheet: one row per person per booked session,
+  with Yes/No, the time and how they were marked. That is the certificate list.
 
 ---
 

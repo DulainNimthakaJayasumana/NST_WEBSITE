@@ -671,3 +671,70 @@ table.data tbody tr:hover td.rowdel-cell{ background:#150b2c; }
   body{ background:#fff; color:#000; }
   .faq__a{ grid-template-rows:1fr; visibility:visible; }
 }
+
+/* ============================================================
+   Attendance: pass QR, find my pass, check-in, admin scanner
+   ============================================================ */
+.pass__id{ display:grid; grid-template-columns:132px minmax(0,1fr); gap:20px; align-items:center; margin-top:18px; }
+.pass__id .pass__code{ margin-top:0; }
+.pass__qr{ width:132px; aspect-ratio:1; background:#fff; box-shadow:inset 0 0 0 1px rgba(5,2,14,.12); display:grid; place-items:center; }
+.pass__qr svg{ width:100%; height:100%; display:block; }
+.pass__qr[aria-busy="true"]{ background:repeating-linear-gradient(45deg,#eee 0 6px,#fff 6px 12px); }
+.pass__qr.is-off{ font-size:.72rem; line-height:1.3; padding:10px; color:#5b5375; text-align:center; }
+.pass__hint{ margin-top:6px; font-size:.84rem; line-height:1.45; color:#5b5375; }
+@media (max-width:520px){ .pass__id{ grid-template-columns:1fr; justify-items:center; text-align:center; } .pass__qr{ width:180px; } }
+
+.findpass{ margin-top:22px; }
+.findpass__toggle{ padding:0; border:0; background:none; font:inherit; font-size:.98rem; color:var(--muted); cursor:pointer; }
+.findpass__toggle b{ color:var(--lilac); font-weight:600; text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; }
+.findpass__toggle:hover b{ color:#fff; }
+.findpass__box{ margin-top:16px; padding:20px 22px; box-shadow:inset 0 0 0 1px var(--hair); max-width:560px; }
+.findpass__row{ display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+.findpass__row input{ flex:1; min-width:180px; }
+
+/* admin: attendance ticks inside the table */
+.attset{ display:flex; flex-wrap:wrap; gap:6px; }
+.attchk{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px 4px 8px; border-radius:999px; font-size:.8rem; white-space:nowrap; color:var(--muted); box-shadow:inset 0 0 0 1px var(--hair); cursor:pointer; user-select:none; transition:color .2s, background .2s, box-shadow .2s; }
+.attchk input{ width:14px; height:14px; margin:0; accent-color:var(--ok); }
+.attchk.is-on{ color:var(--void); background:var(--ok); box-shadow:none; }
+.attchk.is-busy{ opacity:.55; cursor:wait; }
+
+/* admin: scanner */
+.scan{ position:relative; aspect-ratio:4/3; background:#000; overflow:hidden; box-shadow:inset 0 0 0 1px var(--hair); display:grid; place-items:center; }
+.scan video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.scan__idle{ position:relative; color:var(--muted); font-size:.9rem; text-align:center; padding:20px; }
+.scan__frame{ position:absolute; inset:16% 24%; border:2px solid rgba(255,255,255,.75); border-radius:14px; box-shadow:0 0 0 9999px rgba(0,0,0,.35); pointer-events:none; }
+.scan[data-on="false"] .scan__frame{ display:none; }
+.scan.flash-ok{ box-shadow:inset 0 0 0 4px var(--ok); }
+.scan.flash-warn{ box-shadow:inset 0 0 0 4px var(--gold); }
+.scanres{ margin-top:16px; padding:16px 18px; min-height:64px; box-shadow:inset 0 0 0 1px var(--hair); }
+.scanres b{ display:block; font-size:1.15rem; color:#fff; }
+.scanres span{ display:block; font-size:.9rem; color:var(--muted); }
+.scanres--ok{ box-shadow:inset 4px 0 0 var(--ok), inset 0 0 0 1px var(--hair); }
+.scanres--warn{ box-shadow:inset 4px 0 0 var(--gold), inset 0 0 0 1px var(--hair); }
+.scanres--err{ box-shadow:inset 4px 0 0 var(--live), inset 0 0 0 1px var(--hair); }
+.scanres .btn{ margin-top:12px; }
+.scanlog{ margin-top:14px; display:grid; gap:4px; font-size:.84rem; color:var(--muted); max-height:180px; overflow:auto; }
+.attstate{ margin-top:14px; font-size:.95rem; }
+.attstate.is-open{ color:var(--ok); }
+
+/* attend.html */
+.attend{ max-width:620px; margin-inline:auto; }
+.attend__state{ display:inline-flex; align-items:center; gap:10px; margin:18px 0 26px; font-weight:600; }
+.attend__state .dot{ width:9px; height:9px; border-radius:50%; background:var(--muted-2); }
+.attend__state.is-open{ color:var(--ok); }
+.attend__state.is-open .dot{ background:var(--ok); box-shadow:0 0 0 0 rgba(110,231,183,.6); animation:attPulse 1.6s infinite; }
+@keyframes attPulse{ 70%{ box-shadow:0 0 0 10px rgba(110,231,183,0); } 100%{ box-shadow:0 0 0 0 rgba(110,231,183,0); } }
+.attend__done{ padding:26px 28px; background:var(--star); color:var(--void); }
+.attend__done h3{ font-family:var(--f-display); font-weight:400; text-transform:uppercase; font-size:clamp(2rem,5vw,3rem); line-height:1; margin-bottom:10px; }
+.attend__done p{ color:#5b5375; }
+.attend__pick{ display:grid; gap:10px; margin-top:20px; }
+.attend__pick a{ display:flex; justify-content:space-between; gap:12px; padding:14px 18px; box-shadow:inset 0 0 0 1px var(--hair); color:var(--ink); }
+.attend__pick a:hover{ background:var(--panel); color:#fff; }
+
+@media print{
+  .findpass,.btn-row,.pass__foot{ display:none !important; }
+  .pass{ animation:none; }
+}
+.form__grid--3{ grid-template-columns:minmax(0,2fr) minmax(0,1.3fr) minmax(0,1fr); gap:24px var(--sp-4); }
+@media (max-width:860px){ .form__grid--3{ grid-template-columns:minmax(0,1fr); } }

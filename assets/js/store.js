@@ -21,16 +21,28 @@ const LS_REGS = "nst2:registrations";
 const LS_MSGS = "nst2:messages";
 const LS_SUBS = "nst2:subscribers";
 const LS_LIVE = "nst2:live";
+const LS_ATT  = "nst2:attendance";
+const LS_WS   = "nst2:workshops";      // local mode only: edits made on the admin page
 
 let fb = null;             // { app, db, api }
 let mode = "local";
 let readyPromise = null;
 
+/* On localhost only, ?local keeps this tab off the real database, so the
+   team can rehearse check-in without touching live data. */
+function forcedLocal(){
+  try{
+    if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return false;
+    if (new URLSearchParams(location.search).has("local")) sessionStorage.setItem("nst2:forceLocal", "1");
+    return sessionStorage.getItem("nst2:forceLocal") === "1";
+  }catch{ return false; }
+}
+
 /* ---------- boot ---------- */
 export function ready(){
   if (readyPromise) return readyPromise;
   readyPromise = (async () => {
-    if (!isConfigured()) { mode = "local"; return mode; }
+    if (!isConfigured() || forcedLocal()) { mode = "local"; return mode; }
     try{
       const base = `https://www.gstatic.com/firebasejs/${SDK_VERSION}`;
       const [appMod, fsMod, authMod] = await Promise.all([
@@ -125,6 +137,8 @@ function normalise(w){
     resources: w.resources || [],
     entities: w.entities || [],
     registrationOpen: w.registrationOpen !== false,
+    attendFrom:  toDate(w.attendFrom),
+    attendUntil: toDate(w.attendUntil),
     capacity: Number.isFinite(w.capacity) ? w.capacity : null
   };
 }
@@ -133,7 +147,11 @@ function sortByStart(list){
   return [...list].sort((a, b) => (a.startAt?.getTime() || 0) - (b.startAt?.getTime() || 0));
 }
 
-const seedNormalised = () => sortByStart(SEED_WORKSHOPS.map(normalise));
+/* In local mode, edits from the admin page live in this browser and sit over the seed. */
+const seedNormalised = () => {
+  const local = lsReadObj(LS_WS).map(([id, d]) => ({ id, ...d }));
+  return local.length ? mergeOverSeed(local) : sortByStart(SEED_WORKSHOPS.map(normalise));
+};
 
 /* Merge a Firestore doc over its seed twin so a half-filled doc
    (e.g. only joinUrl set) still shows the full session details. */
@@ -180,7 +198,13 @@ export async function getWorkshops(){
 export function onWorkshops(cb){
   let stop = () => {};
   ready().then(() => {
-    if (mode !== "cloud"){ cb(seedNormalised()); return; }
+    if (mode !== "cloud"){
+      cb(seedNormalised());
+      const h = e => { if (e.key === LS_WS) cb(seedNormalised()); };
+      window.addEventListener("storage", h);
+      stop = () => window.removeEventListener("storage", h);
+      return;
+    }
     try{
       const { collection, onSnapshot } = fb.api;
       stop = onSnapshot(
@@ -198,7 +222,14 @@ export function onWorkshops(cb){
 
 export async function saveWorkshop(id, patch){
   await ready();
-  if (mode !== "cloud") throw new Error("Connect Firebase to save workshops.");
+  if (mode !== "cloud"){
+    const all = Object.fromEntries(lsReadObj(LS_WS));
+    const clean = Object.fromEntries(Object.entries(patch).map(([k, v]) => [k, v instanceof Date ? v.toISOString() : v]));
+    all[id] = { ...(all[id] || {}), ...clean };
+    lsWrite(LS_WS, all);
+    window.dispatchEvent(new StorageEvent("storage", { key: LS_WS }));
+    return;
+  }
   const { doc, setDoc } = fb.api;
   await setDoc(doc(fb.db, PATHS.workshops, id), patch, { merge: true });
 }
@@ -267,7 +298,7 @@ export async function register(payload){
     const all = lsRead(LS_REGS);
     all.push(record);
     lsWrite(LS_REGS, all);
-    return { ...record, _local: true };
+    return { ...record, _local: true, pass: localPass(cleanEmail(record.email), all) };
   }
 
   const { collection, addDoc, serverTimestamp } = fb.api;
@@ -276,7 +307,209 @@ export async function register(payload){
     ref: record.ref,
     createdAt: serverTimestamp()
   });
-  return record;
+  // The registration is safe at this point; the pass is a convenience copy.
+  let pass = null;
+  try{ pass = await upsertPass(record); }
+  catch(err){ console.warn("[NST] could not save the pass copy:", err); }
+  return { ...record, pass };
+}
+
+/* ---------- passes ----------
+   passes/{email} holds what the pass shows, so a delegate can type their
+   email and see it again. It never holds the phone number. Anyone may read
+   one pass by its email, nobody but the team may list them. */
+export const cleanEmail = e => String(e || "").trim().toLowerCase();
+const union = (a = [], b = []) => [...new Set([...(a || []), ...(b || [])])];
+
+function passFields(p){
+  return {
+    email: p.email, ref: p.ref, name: p.name || "", entity: p.entity || "",
+    workshopIds: p.workshopIds || [], modules: p.modules || []
+  };
+}
+
+async function upsertPass(rec){
+  const email = cleanEmail(rec.email);
+  const { doc, getDoc, setDoc, serverTimestamp } = fb.api;
+  const ref = doc(fb.db, PATHS.passes, email);
+  const snap = await getDoc(ref);
+  const old = snap.exists() ? snap.data() : null;
+  const next = passFields({
+    email,
+    ref: old?.ref || rec.ref,                      // the first reference stays on the pass
+    name: rec.name, entity: rec.entity,
+    workshopIds: union(old?.workshopIds, rec.workshopIds || [rec.workshopId]),
+    modules: union(old?.modules, rec.modules)
+  });
+  await setDoc(ref, { ...next, updatedAt: serverTimestamp() }, { merge: true });
+  return next;
+}
+
+/* Local mode has no passes collection: build it from this browser's registrations. */
+function localPass(email, regs = lsRead(LS_REGS)){
+  const mine = regs.filter(r => cleanEmail(r.email) === email)
+    .sort((a, b) => String(a.createdAt).localeCompare(String(b.createdAt)));
+  if (!mine.length) return null;
+  const last = mine[mine.length - 1];
+  return passFields({
+    email, ref: mine[0].ref, name: last.name, entity: last.entity,
+    workshopIds: mine.reduce((s, r) => union(s, r.workshopIds || [r.workshopId]), []),
+    modules: mine.reduce((s, r) => union(s, r.modules), [])
+  });
+}
+
+export async function findPass(email){
+  await ready();
+  const e = cleanEmail(email);
+  if (!e) return null;
+  if (mode !== "cloud") return localPass(e);
+  const { doc, getDoc } = fb.api;
+  const snap = await getDoc(doc(fb.db, PATHS.passes, e));
+  return snap.exists() ? passFields(snap.data()) : null;
+}
+
+/* Team only: make sure every registered email has an up-to-date pass,
+   including people who registered before passes existed. Returns how many
+   passes were written. */
+export async function syncPasses(regs){
+  await ready();
+  if (mode !== "cloud") return 0;
+  const { collection, getDocs, doc, setDoc, serverTimestamp } = fb.api;
+  const have = new Map((await getDocs(collection(fb.db, PATHS.passes))).docs.map(d => [d.id, d.data()]));
+  const byEmail = new Map();
+  [...regs].sort((a, b) => (toDate(a.createdAt)?.getTime() || 0) - (toDate(b.createdAt)?.getTime() || 0))
+    .forEach(r => {
+      const e = cleanEmail(r.email);
+      if (!e) return;
+      const p = byEmail.get(e);
+      byEmail.set(e, passFields({
+        email: e, ref: p?.ref || r.ref, name: r.name, entity: r.entity,
+        workshopIds: union(p?.workshopIds, r.workshopIds || [r.workshopId]),
+        modules: union(p?.modules, r.modules)
+      }));
+    });
+  let wrote = 0;
+  for (const [e, want] of byEmail){
+    const cur = have.get(e);
+    const same = cur && cur.ref && cur.name === want.name && cur.entity === want.entity &&
+      union(cur.workshopIds, want.workshopIds).length === (cur.workshopIds || []).length;
+    if (same) continue;
+    const merged = { ...want, ref: cur?.ref || want.ref, workshopIds: union(cur?.workshopIds, want.workshopIds) };
+    try{ await setDoc(doc(fb.db, PATHS.passes, e), { ...merged, updatedAt: serverTimestamp() }, { merge: true }); wrote++; }
+    catch(err){ console.warn("[NST] could not sync pass for", e, err); }
+  }
+  return wrote;
+}
+
+/* ---------- attendance ----------
+   attendance/{workshopId}__{email}: one row per person per session.
+   method is "qr" (scanned at the door), "manual" (ticked in the table) or
+   "self" (the delegate used the online check-in link while it was open). */
+export const attendanceId = (workshopId, email) => `${workshopId}__${cleanEmail(email)}`;
+
+function attRow(id, d){
+  return { id, ...d, email: cleanEmail(d.email), at: toDate(d.at) };
+}
+
+export async function listAttendance(){
+  await ready();
+  if (mode !== "cloud") return lsReadObj(LS_ATT).map(([id, d]) => attRow(id, d));
+  const { collection, getDocs } = fb.api;
+  const snap = await getDocs(collection(fb.db, PATHS.attendance));
+  return snap.docs.map(d => attRow(d.id, d.data()));
+}
+
+export function onAttendance(cb){
+  let stop = () => {};
+  ready().then(() => {
+    if (mode !== "cloud"){
+      const send = () => cb(lsReadObj(LS_ATT).map(([id, d]) => attRow(id, d)));
+      send();
+      const h = e => { if (e.key === LS_ATT) send(); };
+      window.addEventListener("storage", h);
+      stop = () => window.removeEventListener("storage", h);
+      return;
+    }
+    const { collection, onSnapshot } = fb.api;
+    stop = onSnapshot(collection(fb.db, PATHS.attendance),
+      snap => cb(snap.docs.map(d => attRow(d.id, d.data()))),
+      err => console.warn("[NST] attendance stream error:", err));
+  });
+  return () => stop();
+}
+
+/* Team: mark someone present (QR scan or a tick in the table). */
+export async function markAttendance({ workshopId, email, name = "", ref = "", method = "manual" }){
+  await ready();
+  const id = attendanceId(workshopId, email);
+  const row = { workshopId, email: cleanEmail(email), name, ref, method,
+                by: currentUser()?.email || (mode === "cloud" ? "" : "this device") };
+  if (mode !== "cloud"){
+    const all = Object.fromEntries(lsReadObj(LS_ATT));
+    if (!all[id]) all[id] = { ...row, at: new Date().toISOString() };
+    lsWrite(LS_ATT, all);
+    window.dispatchEvent(new StorageEvent("storage", { key: LS_ATT }));
+    return attRow(id, all[id]);
+  }
+  const { doc, setDoc, serverTimestamp } = fb.api;
+  await setDoc(doc(fb.db, PATHS.attendance, id), { ...row, at: serverTimestamp() });
+  return attRow(id, { ...row, at: new Date() });
+}
+
+export async function unmarkAttendance(workshopId, email){
+  await ready();
+  const id = attendanceId(workshopId, email);
+  if (mode !== "cloud"){
+    const all = Object.fromEntries(lsReadObj(LS_ATT));
+    delete all[id];
+    lsWrite(LS_ATT, all);
+    window.dispatchEvent(new StorageEvent("storage", { key: LS_ATT }));
+    return;
+  }
+  const { doc, deleteDoc } = fb.api;
+  await deleteDoc(doc(fb.db, PATHS.attendance, id));
+}
+
+/* Is the online check-in window open for this session right now? */
+export function checkInOpen(w, now = new Date()){
+  return !!(w?.attendFrom && w?.attendUntil && w.attendFrom <= now && now < w.attendUntil);
+}
+
+/* Delegate: mark yourself present from the check-in link.
+   Resolves to { status: "ok" | "already" | "closed" | "not-registered" | "not-this-session", pass, at }.
+   firestore.rules enforces the window and the pass too, so this cannot be
+   skipped by editing the page. */
+export async function selfCheckIn(w, email){
+  await ready();
+  const e = cleanEmail(email);
+  if (!checkInOpen(w)) return { status: "closed" };
+  const pass = await findPass(e);
+  if (!pass) return { status: "not-registered" };
+  if (!pass.workshopIds.includes(w.id)) return { status: "not-this-session", pass };
+
+  const id = attendanceId(w.id, e);
+  const row = { workshopId: w.id, email: e, name: pass.name, ref: pass.ref, method: "self", by: "self" };
+
+  if (mode !== "cloud"){
+    const all = Object.fromEntries(lsReadObj(LS_ATT));
+    if (all[id]) return { status: "already", pass, at: toDate(all[id].at) };
+    all[id] = { ...row, at: new Date().toISOString() };
+    lsWrite(LS_ATT, all);
+    window.dispatchEvent(new StorageEvent("storage", { key: LS_ATT }));
+    return { status: "ok", pass, at: new Date() };
+  }
+
+  const { doc, getDoc, setDoc, serverTimestamp } = fb.api;
+  const ref = doc(fb.db, PATHS.attendance, id);
+  const snap = await getDoc(ref);
+  if (snap.exists()) return { status: "already", pass, at: toDate(snap.data().at) };
+  try{
+    await setDoc(ref, { ...row, at: serverTimestamp() });
+  }catch(err){
+    if (err.code === "permission-denied") return { status: "closed" };
+    throw err;
+  }
+  return { status: "ok", pass, at: new Date() };
 }
 
 export async function listRegistrations(){
@@ -354,6 +587,9 @@ export async function removeMessage(m){
 }
 
 /* ---------- localStorage helpers ---------- */
+function lsReadObj(key){
+  try{ return Object.entries(JSON.parse(localStorage.getItem(key) || "{}")); }catch{ return []; }
+}
 function lsRead(key){
   try{ return JSON.parse(localStorage.getItem(key) || "[]"); }catch{ return []; }
 }
@@ -362,5 +598,5 @@ function lsWrite(key, val){
 }
 
 export function clearLocalData(){
-  [LS_REGS, LS_MSGS, LS_SUBS, LS_LIVE].forEach(k => { try{ localStorage.removeItem(k); }catch{} });
+  [LS_REGS, LS_MSGS, LS_SUBS, LS_LIVE, LS_ATT, LS_WS].forEach(k => { try{ localStorage.removeItem(k); }catch{} });
 }

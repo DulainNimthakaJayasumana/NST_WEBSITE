@@ -4,7 +4,8 @@
 
 import { SERIES, ENTITY_GROUPS } from "./data.js";
 import { mountChrome, liveWatch, esc, fmt, icon, statusOf, isAiesecEmail } from "./ui.js";
-import { register, getMode } from "./store.js";
+import { register, getMode, findPass } from "./store.js";
+import { qrSvg, passCode } from "./qr.js";
 
 mountChrome({ active: "register.html" });
 
@@ -181,10 +182,21 @@ form.addEventListener("submit", async e => {
   }
 });
 
-/* ---------- the confirmation pass ---------- */
-function showPass(rec, chosen){
+/* ---------- the confirmation pass ----------
+   rec is the new registration (or a pass found by email). When it carries a
+   pass, that is shown instead: the pass covers every session this email has
+   booked, under its first reference. */
+function showPass(rec, chosen, { found = false } = {}){
+  const p = rec.pass || rec;
+  if (p.workshopIds?.length && workshops.length){
+    const all = p.workshopIds.map(id => workshops.find(w => w.id === id)).filter(Boolean);
+    if (all.length) chosen = all;
+  }
+  rec = { ...rec, ...p, modules: p.modules?.length ? p.modules : rec.modules };
+
   const pass = document.getElementById("pass");
   const n = chosen.length;
+  const anyPhysical = chosen.some(w => w.type === "physical");
   const anyTbc = chosen.some(w => w.dateConfirmed === false);
   const link = chosen.find(w => w.joinUrl);
 
@@ -202,7 +214,16 @@ function showPass(rec, chosen){
       <span class="eyebrow eyebrow--center">${esc(SERIES.name)}</span>
       <h3>${n} session${n === 1 ? "" : "s"} booked</h3>
       <p class="muted" style="font-size:.9rem">${esc(SERIES.presenter)} &middot; ${esc(SERIES.org)}</p>
-      <div class="pass__code">${esc(rec.ref)}</div>
+      <div class="pass__id">
+        <div class="pass__qr" id="passQr" aria-busy="true"></div>
+        <div>
+          <div class="pass__code">${esc(rec.ref)}</div>
+          <p class="pass__hint">${anyPhysical
+            ? "Show this QR at the door on the physical day. The team scans it to mark your attendance."
+            : "Online sessions: when the team shares the check-in link, enter this email to mark your attendance."}
+            Lost it? Use <b>Find my pass</b> on the register page with your email.</p>
+        </div>
+      </div>
     </div>
     <div class="pass__rows">
       <div class="pass__row"><b>Name</b><span>${esc(rec.name)}</span></div>
@@ -221,14 +242,24 @@ function showPass(rec, chosen){
   pass.querySelectorAll("svg").forEach(s => { s.style.width = "15px"; s.style.height = "15px"; s.style.fill = "currentColor"; });
   pass.querySelector("#printBtn")?.addEventListener("click", () => window.print());
 
+  const qrBox = pass.querySelector("#passQr");
+  qrSvg(passCode(rec), { label: `QR code for pass ${rec.ref}` })
+    .then(svg => { qrBox.innerHTML = svg; qrBox.removeAttribute("aria-busy"); })
+    .catch(err => {
+      console.warn("[NST] QR could not be drawn:", err);
+      qrBox.classList.add("is-off");
+      qrBox.textContent = "QR unavailable offline. The team can type your reference instead.";
+    });
+
+  document.getElementById("doneTitle").textContent = found ? "Your pass" : "See you there";
   document.getElementById("formWrap").hidden = true;
   const done = document.getElementById("doneWrap");
   done.hidden = false;
   window.scrollTo({ top: 0, behavior: "smooth" });
 
-  if (rec._local || getMode() !== "cloud"){
+  if ((rec._local || getMode() !== "cloud") && !document.getElementById("localNote")){
     done.insertAdjacentHTML("beforeend",
-      `<p class="muted" style="text-align:center;margin-top:20px;font-size:.84rem">
+      `<p class="muted" id="localNote" style="text-align:center;margin-top:20px;font-size:.84rem">
          Saved on this device only. Connect Firebase so registrations reach the team.
        </p>`);
   }
@@ -244,3 +275,48 @@ document.getElementById("againBtn")?.addEventListener("click", () => {
   renderPickers();
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+/* ---------- find my pass ----------
+   Type the email you registered with and the pass comes back, QR and all. */
+const findForm = document.getElementById("findForm");
+const findMsg  = document.getElementById("findMsg");
+const findBox  = document.getElementById("findBox");
+
+document.getElementById("findToggle")?.addEventListener("click", () => {
+  findBox.hidden = !findBox.hidden;
+  if (!findBox.hidden) document.getElementById("findEmail").focus();
+});
+
+findForm?.addEventListener("submit", async e => {
+  e.preventDefault();
+  const input = document.getElementById("findEmail");
+  const btn = document.getElementById("findBtn");
+  findMsg.className = "form__msg";
+  if (!isAiesecEmail(input.value)){
+    findMsg.className = "form__msg form__msg--err is-on";
+    findMsg.textContent = "Enter the AIESEC email you registered with, like name@aiesec.net.";
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = "Looking…";
+  try{
+    const p = await findPass(input.value);
+    if (!p){
+      findMsg.className = "form__msg form__msg--err is-on";
+      findMsg.textContent = "No pass for that email yet. Check the spelling, or register below. " +
+        "If you registered earlier and it still is not found, message the team from the contact page.";
+      return;
+    }
+    showPass({ pass: p }, [], { found: true });
+  }catch(err){
+    console.error(err);
+    findMsg.className = "form__msg form__msg--err is-on";
+    findMsg.textContent = "Could not look that up. Check your connection and try again.";
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "Show my pass";
+  }
+});
+
+/* register.html?find=1 opens the lookup straight away (handy to share). */
+if (new URLSearchParams(location.search).has("find") && findBox) findBox.hidden = false;
