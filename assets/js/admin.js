@@ -542,6 +542,7 @@ function renderStats(){
 
   const ac = document.getElementById("attCount");
   if (ac) ac.textContent = `${att.size} check-in${att.size === 1 ? "" : "s"} so far. Certificates go to the people marked here.`;
+  renderAttDash();
 
   const bars = (rows, cap) => {
     const max = Math.max(1, ...rows.map(r => r[1]));
@@ -799,8 +800,9 @@ function renderAttWindow(){
   let text;
   if (open){
     const left = Math.max(0, Math.round((w.attendUntil - now) / 1000));
-    const mm = Math.floor(left / 60), ss = String(left % 60).padStart(2, "0");
-    text = `Open now, until ${fmt.time(w.attendUntil)} (${mm}:${ss} left).`;
+    const hh = Math.floor(left / 3600), mm = Math.floor(left / 60) % 60, ss = String(left % 60).padStart(2, "0");
+    const clock = hh ? `${hh}:${String(mm).padStart(2, "0")}:${ss}` : `${mm}:${ss}`;
+    text = `Open now, until ${fmt.time(w.attendUntil)} (${clock} left).`;
   }else if (w.attendFrom && w.attendFrom > now){
     text = `Opens at ${fmt.time(w.attendFrom)}.`;
   }else if (w.attendUntil){
@@ -813,8 +815,45 @@ function renderAttWindow(){
   lastWinKey = key;
   state.textContent = text;
   state.classList.toggle("is-open", open);
+  renderAttDash();
 }
 attSel.addEventListener("change", renderAttWindow);
+
+/* ---------- live attendance count for the session picked above ----------
+   Re-drawn whenever a check-in arrives (onAttendance → renderStats), when the
+   session changes, and when the window opens or closes. */
+function renderAttDash(){
+  const host = document.getElementById("attDash");
+  const w = workshops.find(x => x.id === attSel?.value);
+  if (!host || !w) return;
+
+  const booked = new Set(regs.filter(r => attends(r, w.id)).map(r => cleanEmail(r.email)));
+  const rows = [...att.values()].filter(a => a.workshopId === w.id);
+  const fromBooked = rows.filter(a => booked.has(a.email)).length;
+  const walkIns = rows.length - fromBooked;
+  const pct = booked.size ? Math.round((fromBooked / booked.size) * 100) : 0;
+  const by = m => rows.filter(a => (a.method || "manual") === m).length;
+  const sinceOpen = w.attendFrom ? rows.filter(a => a.method === "self" && a.at && a.at >= w.attendFrom).length : 0;
+  const nameOf = email => regs.find(r => cleanEmail(r.email) === email)?.name || email;
+  const recent = [...rows].sort((a, b) => (b.at?.getTime() || 0) - (a.at?.getTime() || 0)).slice(0, 6);
+  const HOW_SHORT = { self: "online", qr: "scanned", manual: "ticked" };
+
+  host.innerHTML = `
+    <div class="attdash__top">
+      <b>${rows.length}</b>
+      <span>marked present<br>${fromBooked} of ${booked.size} booked · ${pct}%${walkIns ? ` · ${walkIns} not booked` : ""}</span>
+    </div>
+    <div class="attdash__bar" role="img" aria-label="${pct}% of booked people marked present"><i style="width:${pct}%"></i></div>
+    <div class="attdash__split">
+      <span><i class="dot" style="background:var(--ok)"></i>Online ${by("self")}</span>
+      <span><i class="dot" style="background:var(--violet-2)"></i>Scanned ${by("qr")}</span>
+      <span><i class="dot" style="background:var(--gold)"></i>Ticked ${by("manual")}</span>
+      ${w.attendFrom ? `<span class="dim">${sinceOpen} via the link since ${esc(fmt.time(w.attendFrom))}</span>` : ""}
+    </div>
+    ${recent.length ? `<ul class="attdash__recent">${recent.map(a =>
+      `<li><span>${esc(nameOf(a.email))}</span><span class="dim">${a.at ? esc(fmt.time(a.at)) : ""} · ${HOW_SHORT[a.method] || "ticked"}</span></li>`).join("")}</ul>`
+      : `<p class="dim" style="font-size:.88rem">Nobody marked for this session yet.</p>`}`;
+}
 
 async function setWindow(open){
   const w = workshops.find(x => x.id === attSel.value);
