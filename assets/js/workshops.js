@@ -57,7 +57,7 @@ if (modEl){
 const facil = document.getElementById("facil");
 if (facil){
   const names = [...new Set([...WORKSHOPS]
-    .sort((a, b) => a.startAt.localeCompare(b.startAt))
+    .sort((a, b) => String(a.startAt).localeCompare(String(b.startAt)))
     .flatMap(w => w.facilitators))];
   facil.innerHTML = names.map(n => {
     const p = PEOPLE[n] || { name: n };

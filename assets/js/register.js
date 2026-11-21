@@ -54,7 +54,7 @@ function renderPickers(){
         <span class="picker__txt">
           <b>${esc(w.title)}</b>
           <span>${note}</span>
-          ${w.dateConfirmed === false ? `<span class="dim"> · date still to be confirmed</span>` : ""}
+          ${w.startAt && w.dateConfirmed === false ? `<span class="dim"> · date still to be confirmed</span>` : ""}
           <span class="seats dim" data-seats="${esc(w.id)}"></span>
         </span>
       </label>`;
