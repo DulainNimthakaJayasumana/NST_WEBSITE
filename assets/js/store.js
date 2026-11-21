@@ -144,7 +144,7 @@ function normalise(w){
 }
 
 function sortByStart(list){
-  return [...list].sort((a, b) => (a.startAt?.getTime() || 0) - (b.startAt?.getTime() || 0));
+  return [...list].sort((a, b) => (a.startAt?.getTime() ?? Infinity) - (b.startAt?.getTime() ?? Infinity) || 0);
 }
 
 /* In local mode, edits from the admin page live in this browser and sit over the seed. */

@@ -49,14 +49,14 @@ const aiesecIn = list => list.map(n => `AIESEC in ${n}`);
 
 export const CLUSTERS = [
   {
-    id: "colombo", city: "Colombo", dateLabel: "Saturday 28 November",
+    id: "colombo", city: "Colombo", dateLabel: "Date TBA",
     entities: aiesecIn([
       "Colombo North", "Colombo South", "Colombo Central", "USJ", "Ruhuna",
       "SLIIT", "IIT", "Saegis", "NIBM", "NSBM", "KDU", "SLTC", "Horizon Campus"
     ])
   },
   {
-    id: "kandy", city: "Kandy", dateLabel: "Sunday 6 December",
+    id: "kandy", city: "Kandy", dateLabel: "Date TBA",
     entities: aiesecIn([
       "EUSL", "SLIIT Kandy", "Vavuniya", "Jaffna", "Wayamba", "Rajarata", "Kandy"
     ])
@@ -197,11 +197,11 @@ export const WORKSHOPS = [
     type: "physical",
     phase: "colombo",
     track: "DXP + Videography",
-    startAt: "2026-11-28T10:00:00+05:30",
-    endAt:   "2026-11-28T17:30:00+05:30",
-    dateConfirmed: true,
+    startAt: null,
+    endAt:   null,
+    dateConfirmed: false,
     durationLabel: "Full day · 10.00 – 17.30",
-    venue: "University of Sri Jayewardenepura",
+    venue: "",
     joinUrl: "",
     facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
@@ -219,11 +219,11 @@ export const WORKSHOPS = [
     type: "physical",
     phase: "kandy",
     track: "DXP + Videography",
-    startAt: "2026-12-06T10:00:00+05:30",
-    endAt:   "2026-12-06T17:30:00+05:30",
-    dateConfirmed: true,
+    startAt: null,
+    endAt:   null,
+    dateConfirmed: false,
     durationLabel: "Full day · 10.00 – 17.30",
-    venue: "University of Peradeniya",
+    venue: "",
     joinUrl: "",
     facilitators: ["Dulain", "Achintha"],
     tools: ["Phone", "Laptop"],
@@ -304,7 +304,7 @@ export function shortTitle(w){
 export function sessionsOf(name){
   const led = WORKSHOPS
     .filter(w => w.facilitators.includes(name))
-    .sort((a, b) => a.startAt.localeCompare(b.startAt))
+    .sort((a, b) => String(a.startAt).localeCompare(String(b.startAt)))
     .map(w => SHORT[w.id] || w.track);
   return [...new Set(led)].join(" and ");
 }
@@ -383,8 +383,8 @@ export const FAQ = [
        "a Podcast workshop on 12 December, " +
        "Content Writing on 19 December and an HR session on managing a showcasing team " +
        "and membership R&R on 20 December, one to two hours each. The " +
-       "physical workshops are a full day, 10.00 to 17.30, at the University of Sri " +
-       "Jayewardenepura for Colombo and the University of Peradeniya for Kandy, covering " +
+       "physical workshops are a full day, 10.00 to 17.30, one in Colombo and one in Kandy; " +
+       "dates and venues will be announced here soon. They cover " +
        "DXP handling in OBS and vMix and hands-on videography."
   },
   {

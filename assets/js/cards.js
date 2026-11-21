@@ -26,7 +26,7 @@ export function sessionRow(w, i, { open = false } = {}){
 
   const when = w.dateConfirmed === false && w.dateNote
     ? w.dateNote.split(" - ")[0].replace(/ 20\d\d$/, "")
-    : `${fmt.short(w.startAt)} · ${fmt.time(w.startAt)}`;
+    : w.startAt ? `${fmt.short(w.startAt)} · ${fmt.time(w.startAt)}` : "Date TBA";
 
   const cta = st === "live" && join
     ? `<a class="btn btn--live btn--sm" href="${esc(join)}" target="_blank" rel="noopener">Join now</a>`
@@ -94,7 +94,7 @@ const fStop = new Intl.DateTimeFormat("en-GB", { timeZone: SERIES.timezone, week
 
 export function renderPhases(el, workshops, now = new Date()){
   if (!el) return;
-  const list = [...workshops].filter(w => w.startAt).sort((a, b) => a.startAt - b.startAt);
+  const list = [...workshops].sort((a, b) => (a.startAt ?? Infinity) - (b.startAt ?? Infinity) || 0);
   el.innerHTML = list.map(w => {
     const live = statusOf(w, now) === "live";
     const done = statusOf(w, now) === "done";
@@ -104,9 +104,9 @@ export function renderPhases(el, workshops, now = new Date()){
     return `
     <div class="phase ${live ? "is-active" : done ? "is-done" : ""}">
       <span class="phase__status">${esc(status)}</span>
-      <div class="phase__date">${esc(fStop.format(w.startAt))}</div>
+      <div class="phase__date">${w.startAt ? esc(fStop.format(w.startAt)) : "Date TBA"}</div>
       <h4>${esc(w.title)}</h4>
-      <p>${esc(fmt.time(w.startAt))} – ${esc(fmt.time(w.endAt))} · ${esc(online ? (w.platform || "Online") : (w.venue || "Venue to be announced"))}</p>
+      <p>${w.startAt ? `${esc(fmt.time(w.startAt))} – ${esc(fmt.time(w.endAt))} · ` : ""}${esc(online ? (w.platform || "Online") : (w.venue || "Venue to be announced"))}</p>
       ${cluster ? `<p class="phase__ents">${esc(cluster.entities.join(" · "))}</p>` : ""}
     </div>`;
   }).join("");
