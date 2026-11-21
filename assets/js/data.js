@@ -99,8 +99,8 @@ export const WORKSHOPS = [
     type: "online",
     phase: "online",
     track: "Design",
-    startAt: "2026-11-22T19:00:00+05:30",
-    endAt:   "2026-11-22T20:30:00+05:30",
+    startAt: "2026-11-28T19:00:00+05:30",
+    endAt:   "2026-11-28T20:30:00+05:30",
     dateConfirmed: true,
     durationLabel: "1h 30min",
     platform: "Google Meet",
@@ -379,7 +379,7 @@ export const FAQ = [
   {
     q: "What is the difference between the online and the physical sessions?",
     a: "The six online sessions run live on Google Meet: Video Editing on 14 " +
-       "November, a Brand Masterclass on 21 November, Graphics Design on 22 November, " +
+       "November, a Brand Masterclass on 21 November, Graphics Design on 28 November, " +
        "a Podcast workshop on 12 December, " +
        "Content Writing on 19 December and an HR session on managing a showcasing team " +
        "and membership R&R on 20 December, one to two hours each. The " +
